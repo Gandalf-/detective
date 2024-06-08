@@ -1,0 +1,11 @@
+.vscode
+__pycache__
+util/__pycache__
+data/db.json.tmp
+.mypy_cache
+.ruff_cache
+tags
+*.pyc
+profile.*
+.DS_Store
+*.sync-conflict*
