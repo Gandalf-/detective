@@ -35,14 +35,22 @@ class TestSpecies(unittest.TestCase):
         self.assertEqual(perch.common, 'Pile Perch')
         self.assertEqual(perch.scientific, 'Rhacochilus vacca')
 
-    @unittest.skip('Needs image updates')
     def test_greenling_gender(self) -> None:
-        pass
+        greenling = get_by_code('KGM')
+        self.assertEqual(greenling.common, 'Kelp Greenling Male')
+        self.assertEqual(greenling.scientific, 'Hexagrammos decagrammus')
 
     def test_multiple_scientific(self) -> None:
         sieve_kelp = get_by_code('SV')
         self.assertEqual(sieve_kelp.common, 'Sieve Kelp')
         self.assertEqual(sieve_kelp.scientific, 'Agarum clathratum')
+
+    def test_ignore_yoy(self) -> None:
+        try:
+            get_by_code('YBY')
+            self.fail('Should have thrown StopIteration')
+        except StopIteration:
+            pass
 
 
 def get_by_code(code: str) -> Species:
