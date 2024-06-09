@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 
+import hashlib
 import os
+from functools import lru_cache
 from typing import List, Tuple
+
+image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
 
 
 class Image:
@@ -10,6 +14,9 @@ class Image:
         self.s_label = label
         self.g_label = self._general_label()
         self.credit = credit
+
+        relative_path = path.replace(image_root, '')
+        self.id = hashlib.md5(relative_path.encode()).hexdigest()
 
     def __repr__(self) -> str:
         return f'{self.g_label} - {self.credit}'
@@ -20,8 +27,20 @@ class Image:
         return label
 
 
+def load_everything() -> List[Image]:
+    images: List[Image] = []
+
+    for category in ('Algae', 'Fish', 'Inverts'):
+        path = make_root(category)
+        images.extend(load_category(path))
+
+    return images
+
+
+# PRIVATE
+
+
 def make_root(path: str) -> str:
-    image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
     return os.path.join(image_root, path)
 
 
@@ -42,6 +61,7 @@ def load_category(category: str) -> List[Image]:
     return images
 
 
+@lru_cache(None)
 def load_root(root: str) -> List[Image]:
     images: List[Image] = []
 

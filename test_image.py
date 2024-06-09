@@ -60,6 +60,16 @@ class TestLoad(unittest.TestCase):
             self.assertTrue(os.path.exists(img.path))
             self.assertNotEqual(img.credit, '', img)
 
+    def test_credits(self) -> None:
+        images = image.load_everything()
+        people = {img.credit for img in images}
+        self.assertIn('Dan Abbott', people)
+
+    def test_uniqueness(self) -> None:
+        images = image.load_everything()
+        ids = {img.id for img in images}
+        self.assertEqual(len(ids), len(images))
+
 
 class TestUtility(unittest.TestCase):
     def test_titlecase_to_spaces(self) -> None:
