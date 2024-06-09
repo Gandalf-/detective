@@ -1,24 +1,34 @@
 #!/usr/bin/python3
 
 import os
+from typing import List, Tuple
 
 image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
 
 
 class Image:
-    def __init__(self, path: str, credit: str) -> None:
+    def __init__(self, path: str, label: str, credit: str) -> None:
         self.path = path
+        self.label = label
         self.credit = credit
 
 
-def load(path: str) -> [Image]:
+def load(path: str) -> List[Image]:
+    for path in os.listdir(path):
+        if not os.path.isfile(path):
+            continue
+
+        ext = os.path.splitext(path)[1]
+        if ext.lower() not in ('.jpg', '.jpeg', '.png'):
+            continue
+
     return []
 
 
 # Parsing filenames
 
 
-def parse_name(filename: str) -> (str, str):
+def parse_name(filename: str) -> Tuple[str, str]:
     label, _ = os.path.splitext(filename)
     label = normalize(label)
 
