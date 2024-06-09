@@ -8,8 +8,8 @@ ruff:
 	ruff check --fix .
 
 format:
-	isort --jobs -1 *.py */*.py
-	ruff format *.py */*.py
+	isort --jobs -1 *.py
+	ruff format *.py
 
 
 .PHONY: test unittest
