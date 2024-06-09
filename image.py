@@ -24,7 +24,8 @@ class Image:
         return f'{self.g_label} - {self.credit}'
 
     def _general_label(self) -> str:
-        label = os.path.basename(os.path.dirname(self.path))
+        relative_path = os.path.dirname(os.path.relpath(self.path, image_root))
+        label = relative_path.split(os.sep, 1)[1].replace('/', ' ')
         label = label.split('(')[0].strip()
         return label
 
@@ -55,7 +56,7 @@ def load_category(category: str) -> List[Image]:
         if not os.path.isdir(root_path):
             continue
 
-        if root in ('Unidentified', 'Other Mixed'):
+        if root in ('Unidentified', 'Other Mixed', 'YOY'):
             continue
 
         images.extend(load_root(root_path))
@@ -69,6 +70,14 @@ def load_root(root: str) -> List[Image]:
 
     for filename in os.listdir(root):
         path = os.path.join(root, filename)
+
+        if path.endswith('Undaria.Dan Abbott'):
+            # XXX completely different format
+            continue
+
+        if os.path.isdir(path):
+            sub_path = os.path.join(root, filename)
+            images.extend(load_root(sub_path))
 
         if not os.path.isfile(path):
             continue

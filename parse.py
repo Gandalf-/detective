@@ -21,6 +21,9 @@ def parse_name(filename: str) -> Tuple[str, str]:
     return (name, credit)
 
 
+# PRIVATE
+
+
 def handle_letter_suffix(names: List[str], credit: str) -> Tuple[str, str]:
     if len(credit) == 1 and credit.isalpha():
         credit = names[-1]

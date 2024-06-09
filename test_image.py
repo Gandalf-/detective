@@ -70,6 +70,26 @@ class TestLoad(unittest.TestCase):
         ids = {img.id for img in images}
         self.assertEqual(len(ids), len(images))
 
+    def test_ignored_categories(self) -> None:
+        fish_root = image.make_root('Fish')
+        images = image.load_category(fish_root)
+
+        for img in images:
+            self.assertNotEqual(img.g_label, 'YOY')
+
+    def test_sub_category(self) -> None:
+        greenling_root = image.make_root('Fish/Kelp Greenling')
+        images = image.load_root(greenling_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.credit, '', img)
+
+            self.assertIn('Kelp Greenling', img.g_label)
+            *_, gender = img.g_label.split(' ')
+            self.assertIn(gender, ['Male', 'Female', 'Juvenile'])
+
 
 if __name__ == '__main__':
     unittest.main()
