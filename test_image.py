@@ -5,13 +5,10 @@ import unittest
 
 import image
 
-algae_root = os.path.join(image.image_root, 'Algae')
-bull_kelp_root = os.path.join(algae_root, 'Bull Kelp')
-acid_weed_root = os.path.join(algae_root, 'Acid Weed (Desmarestia ligulata)')
-
 
 class TestLoad(unittest.TestCase):
     def test_load_bull_kelp(self) -> None:
+        bull_kelp_root = image.make_root('Algae/Bull Kelp')
         images = image.load_root(bull_kelp_root)
         self.assertNotEqual(images, [])
 
@@ -24,6 +21,7 @@ class TestLoad(unittest.TestCase):
             self.assertEqual(img.g_label, 'Bull Kelp')
 
     def test_load_acid_weed(self) -> None:
+        acid_weed_root = image.make_root('Algae/Acid Weed (Desmarestia ligulata)')
         images = image.load_root(acid_weed_root)
         self.assertNotEqual(images, [])
 
@@ -36,6 +34,7 @@ class TestLoad(unittest.TestCase):
             self.assertEqual(img.g_label, 'Acid Weed')
 
     def test_load_algae(self) -> None:
+        algae_root = image.make_root('Algae')
         images = image.load_category(algae_root)
         self.assertNotEqual(images, [])
 
@@ -44,8 +43,17 @@ class TestLoad(unittest.TestCase):
             self.assertNotEqual(img.credit, '', img)
 
     def test_load_fish(self) -> None:
-        fish_root = os.path.join(image.image_root, 'Fish')
+        fish_root = image.make_root('Fish')
         images = image.load_category(fish_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.credit, '', img)
+
+    def test_load_inverts(self) -> None:
+        inverts_root = image.make_root('Inverts')
+        images = image.load_category(inverts_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -54,10 +62,6 @@ class TestLoad(unittest.TestCase):
 
 
 class TestUtility(unittest.TestCase):
-    def test_image_root(self) -> None:
-        exists = os.path.exists(image.image_root)
-        assert exists
-
     def test_titlecase_to_spaces(self) -> None:
         self.assertEqual(image.titlecase_to_spaces('BullKelp'), 'Bull Kelp')
         self.assertEqual(image.titlecase_to_spaces('DavidHorwich'), 'David Horwich')

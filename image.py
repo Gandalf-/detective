@@ -3,8 +3,6 @@
 import os
 from typing import List, Tuple
 
-image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
-
 
 class Image:
     def __init__(self, path: str, label: str, credit: str) -> None:
@@ -20,6 +18,11 @@ class Image:
         label = os.path.basename(os.path.dirname(self.path))
         label = label.split('(')[0].strip()
         return label
+
+
+def make_root(path: str) -> str:
+    image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
+    return os.path.join(image_root, path)
 
 
 def load_category(category: str) -> List[Image]:
