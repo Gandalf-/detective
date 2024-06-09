@@ -5,6 +5,53 @@ import unittest
 
 import image
 
+algae_root = os.path.join(image.image_root, 'Algae')
+bull_kelp_root = os.path.join(algae_root, 'Bull Kelp')
+acid_weed_root = os.path.join(algae_root, 'Acid Weed (Desmarestia ligulata)')
+
+
+class TestLoad(unittest.TestCase):
+    def test_load_bull_kelp(self) -> None:
+        images = image.load_root(bull_kelp_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.s_label, '')
+            self.assertNotEqual(img.credit, '')
+
+            self.assertIn('Bull Kelp', img.s_label)
+            self.assertEqual(img.g_label, 'Bull Kelp')
+
+    def test_load_acid_weed(self) -> None:
+        images = image.load_root(acid_weed_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.s_label, '')
+            self.assertNotEqual(img.credit, '')
+
+            self.assertIn('Acid Weed', img.s_label)
+            self.assertEqual(img.g_label, 'Acid Weed')
+
+    def test_load_algae(self) -> None:
+        images = image.load_category(algae_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.credit, '', img)
+
+    def test_load_fish(self) -> None:
+        fish_root = os.path.join(image.image_root, 'Fish')
+        images = image.load_category(fish_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.credit, '', img)
+
 
 class TestUtility(unittest.TestCase):
     def test_image_root(self) -> None:
@@ -45,6 +92,13 @@ class TestParseName(unittest.TestCase):
         for filename, expected in cases:
             self.assertEqual(image.parse_name(filename), expected)
 
+    def test_trailing_letter(self) -> None:
+        cases = [
+            ('KelpRockfish_Abbott-a (2).JPG', ('Kelp Rockfish', 'Abbott')),
+        ]
+        for filename, expected in cases:
+            self.assertEqual(image.parse_name(filename), expected)
+
     def test_space_simple(self) -> None:
         cases = [
             ('Acid Weed-1-Jackie Selbitschka.jpeg', ('Acid Weed', 'Jackie Selbitschka')),
@@ -67,6 +121,10 @@ class TestParseName(unittest.TestCase):
             image.parse_name(filename),
             ('Bull Kelp Giant Kelp Yellowtail Rockfish Blue Rockfish', 'Dan Schwartz'),
         )
+
+    def test_leading_number(self) -> None:
+        filename = '3R.DanAbbott.jpg'
+        self.assertEqual(image.parse_name(filename), ('R', 'Dan Abbott'))
 
     def test_unrelated_underscores(self) -> None:
         filename = 'Seagrass_2020_08_07_SelenaMcMillan (1).JPG'

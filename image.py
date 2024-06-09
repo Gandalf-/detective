@@ -9,12 +9,42 @@ image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and 
 class Image:
     def __init__(self, path: str, label: str, credit: str) -> None:
         self.path = path
-        self.label = label
+        self.s_label = label
+        self.g_label = self._general_label()
         self.credit = credit
 
+    def __repr__(self) -> str:
+        return f'{self.g_label} - {self.credit}'
 
-def load(path: str) -> List[Image]:
-    for path in os.listdir(path):
+    def _general_label(self) -> str:
+        label = os.path.basename(os.path.dirname(self.path))
+        label = label.split('(')[0].strip()
+        return label
+
+
+def load_category(category: str) -> List[Image]:
+    images = []
+
+    for root in os.listdir(category):
+        root_path = os.path.join(category, root)
+
+        if not os.path.isdir(root_path):
+            continue
+
+        if root in ('Unidentified', 'Other Mixed'):
+            continue
+
+        images.extend(load_root(root_path))
+
+    return images
+
+
+def load_root(root: str) -> List[Image]:
+    images: List[Image] = []
+
+    for filename in os.listdir(root):
+        path = os.path.join(root, filename)
+
         if not os.path.isfile(path):
             continue
 
@@ -22,7 +52,16 @@ def load(path: str) -> List[Image]:
         if ext.lower() not in ('.jpg', '.jpeg', '.png'):
             continue
 
-    return []
+        try:
+            label, credit = parse_name(filename)
+        except IndexError:
+            print(f'Error parsing {path}')
+            continue
+
+        image = Image(path, label, credit)
+        images.append(image)
+
+    return images
 
 
 # Parsing filenames
@@ -32,9 +71,9 @@ def parse_name(filename: str) -> Tuple[str, str]:
     label, _ = os.path.splitext(filename)
     label = normalize(label)
 
-    *name, credit = label.split('_')
+    *names, credit = label.split('_')
+    name, credit = handle_letter_suffix(names, credit)
 
-    name = ' '.join(name)
     name = titlecase_to_spaces(name)
     name = strip_irrelevant(name)
     name = name.strip()
@@ -42,6 +81,15 @@ def parse_name(filename: str) -> Tuple[str, str]:
     credit = titlecase_to_spaces(credit)
     credit = handle_mc_last(credit)
 
+    return (name, credit)
+
+
+def handle_letter_suffix(names: List[str], credit: str) -> Tuple[str, str]:
+    if len(credit) == 1 and credit.isalpha():
+        credit = names[-1]
+        names = names[:-1]
+
+    name = ' '.join(names)
     return (name, credit)
 
 
@@ -56,10 +104,10 @@ def normalize(filename: str) -> str:
     """Normalize a filename to a standard format"""
     chars = []
 
-    for c in filename:
+    for i, c in enumerate(filename):
         if c.isalpha() or c.isspace() or c == "'":
             chars.append(c)
-        elif chars[-1] != '_':
+        elif i > 0 and chars[-1] != '_':
             chars.append('_')
 
     return ''.join(chars).strip('_ ')
