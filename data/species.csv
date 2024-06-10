@@ -26,7 +26,7 @@ Red Irish Lord,Hemilepidotus hemilepidotus,RIL
 Lingcod,Ophiodon elongatus,LIN
 Wolf Eel,Anarrhichthys ocellatus,WFE
 Spotted Ratfish,Hydrolagus colliei,SPR
-Pacific Spiny Dogfish,Squalus suckleyi,SDF
+Spiny Dogfish,Squalus suckleyi,SDF
 Sixgill Shark,Hexanchus griseus,BNS
 Forage Fish,,FGF
 YOY-Black/Yellowtail,Sebastes spp.,YBY
@@ -40,7 +40,7 @@ YOY-Yelloweye,Sebastes spp.,YYE
 Bull Kelp,Nereocystis luetkeana,BK
 Torn Kelp,Laminaria setchellii,TN
 Woody Kelp,Pterygophora californica,WD
-Feather Boa,Egregia menzisii,FB
+Feather Boa Kelp,Egregia menzisii,FB
 Giant Kelp,Macrocystis pyrifera,GK
 Wire Weed,Sargassum muticum,WW
 Sieve Kelp,"Agarum clathratum, Neoagarum fimbriatum",SV
@@ -57,7 +57,7 @@ Dungeness Crab,Metacarcinus magister,DGC
 Kelp Crabs,Pugettia spp.,KLC
 Large Anemones,Order Actinaria,LGA
 Giant Plumose Anemone,Metridium farcimen,PLA
-Short-Spined Star,Pisaster brevispinus,SSS
+Short Spined Sea Star,Pisaster brevispinus,SSS
 Bat Star,Patiria miniata,BTS
 Giant-Spined Sea Star,Pisaster giganteus,GSS
 Leather Star,Dermasterias imbricata,LHS
@@ -67,7 +67,7 @@ Sunflower Star,Pycnopodia helianthoides,SFS
 Mottled Star,Evasterias troschelli,MTS
 Blood Star,Henricia leviuscula,BLS
 Rainbow Star,Orthasterias koehleri,RBS
-Dawson’s Sun Star,Solaster dawsoni,DSN
+Dawson's Sun Star,Solaster dawsoni,DSN
 Purple Sea Urchin,Strongylocentrotus purpuratus,PPU
 Red Sea Urchin,Mesocentrotus franciscanus,RDU
 Green Sea Urchin,Strongylocentrotus droebachiensis,GPU

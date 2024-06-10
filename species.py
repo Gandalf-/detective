@@ -3,12 +3,16 @@
 import csv
 import pathlib
 from functools import lru_cache
-from typing import List
+from typing import Dict, List
+
+from image import Image, load_everything
 
 
 class Species:
     def __init__(self, common: str, scientific: str, code: str) -> None:
-        self.common = common.replace('-', ' ')
+        common = common.replace('-', ' ')
+        common = common.replace('Sea Urchin', 'Urchin')
+        self.common = common
 
         self.scientific = scientific or 'None'
         if ',' in self.scientific:
@@ -38,3 +42,26 @@ def load_species() -> List[Species]:
             species.append(new)
 
     return species
+
+
+@lru_cache(None)
+def build_image_tree() -> Dict[str, List[Image]]:
+    tree: Dict[str, List[Image]] = {}
+
+    species = load_species()
+    all_common = {spec.common for spec in species}
+    non_reef = set()
+
+    for img in load_everything():
+        if img.g_label in all_common:
+            tree.setdefault(img.g_label, []).append(img)
+        else:
+            non_reef.add(img.g_label)
+
+    found = set(tree.keys())
+    missing = all_common - found
+
+    # XXX Come back to this later
+    assert len(missing) == 6, missing
+
+    return tree

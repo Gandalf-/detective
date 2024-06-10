@@ -4,11 +4,17 @@ import os
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
 from typing import Set
 
 from image import Image, load_everything
 
 web_root = os.path.expanduser('~/working/object-publish/detective')
+
+
+def quality_hashes(image: Image) -> Set[str]:
+    smalls = existing_smalls()
+    larges = existing_larges()
 
 
 def create_webp() -> None:
@@ -63,10 +69,12 @@ def create_fullsize(image: Image) -> None:
     print(f'created {output}', file=sys.stderr)
 
 
+@lru_cache(None)
 def existing_smalls() -> Set[str]:
     return {c.strip('.webp') for c in os.listdir(os.path.join(web_root, 'small'))}
 
 
+@lru_cache(None)
 def existing_larges() -> Set[str]:
     return {c.strip('.webp') for c in os.listdir(os.path.join(web_root, 'large'))}
 

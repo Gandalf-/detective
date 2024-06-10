@@ -27,7 +27,19 @@ class Image:
         relative_path = os.path.dirname(os.path.relpath(self.path, image_root))
         label = relative_path.split(os.sep, 1)[1].replace('/', ' ')
         label = label.split('(')[0].strip()
-        return label
+
+        conversions = {
+            'Pterygophora': 'Woody Kelp',
+            'Sargassum horneri': 'Horn Weed',
+            'Laminaria setchelii': 'Torn Kelp',
+            'Sargassum muticum': 'Wire Weed',
+            'Five-ribbed Kelp': 'Five ribbed Kelp',
+            'Three-ribbed Kelp': 'Three ribbed Kelp',
+            "Stimpson's Sun Star": 'Blue Striped Sun Star',
+            'False Ochre Star': 'Mottled Star',
+        }
+
+        return conversions.get(label, label)
 
 
 def load_everything() -> List[Image]:

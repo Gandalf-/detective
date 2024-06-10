@@ -52,6 +52,18 @@ class TestSpecies(unittest.TestCase):
         except StopIteration:
             pass
 
+    def test_parse_urchins(self) -> None:
+        purple = get_by_code('PPU')
+        self.assertEqual(purple.common, 'Purple Urchin')
+
+
+class TestImageTree(unittest.TestCase):
+    def test_build(self) -> None:
+        tree = species.build_image_tree()
+
+        for spec, images in tree.items():
+            self.assertNotEqual(images, [])
+
 
 def get_by_code(code: str) -> Species:
     species_list = species.load_species()

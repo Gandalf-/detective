@@ -90,6 +90,25 @@ class TestLoad(unittest.TestCase):
             *_, gender = img.g_label.split(' ')
             self.assertIn(gender, ['Male', 'Female', 'Juvenile'])
 
+    def test_label_conversions(self) -> None:
+        cases = [
+            ('Algae/Pterygophora (Woody Kelp)', 'Woody Kelp'),
+            ('Algae/Sargassum horneri (Horn Weed)', 'Horn Weed'),
+            ('Algae/Laminaria setchelii (Torn Kelp)', 'Torn Kelp'),
+            ('Algae/Sargassum muticum (Wire Weed)', 'Wire Weed'),
+            ('Algae/Five-ribbed Kelp (Costaria costata)', 'Five ribbed Kelp'),
+            ('Algae/Three-ribbed Kelp (Cymathaera triplicata)', 'Three ribbed Kelp'),
+            ("Inverts/Stimpson's Sun Star", 'Blue Striped Sun Star'),
+        ]
+
+        for case in cases:
+            original, expected = case
+            root = image.make_root(original)
+            images = image.load_root(root)
+            self.assertNotEqual(images, [])
+
+            self.assertEqual(images[0].g_label, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
