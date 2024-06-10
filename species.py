@@ -44,8 +44,11 @@ def load_species() -> List[Species]:
     return species
 
 
+ImageTree = Dict[str, List[Image]]
+
+
 @lru_cache(None)
-def build_image_tree() -> Dict[str, List[Image]]:
+def build_image_tree() -> ImageTree:
     tree: Dict[str, List[Image]] = {}
 
     species = load_species()
