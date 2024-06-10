@@ -12,7 +12,7 @@ class TestTableBuilder(unittest.TestCase):
         tree = {k: tree[k] for k in list(tree)[:3]}
 
         ns, ts, ss, ps, cs = web.table_builder(tree)
-        self.assertEqual(ns, ['Bull Kelp', 'Five ribbed Kelp', 'Sieve Kelp'])
+        self.assertEqual(ns, ['Acid Weed', 'Broad Ribbed Kelp', 'Bull Kelp'])
 
 
 if __name__ == '__main__':

@@ -3,8 +3,7 @@
 import os
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from functools import lru_cache
-from typing import List, Set
+from typing import List
 
 from tqdm import tqdm
 
@@ -14,31 +13,27 @@ web_root = os.path.expanduser('~/working/object-publish/detective')
 
 
 def create_webp(images: List[Image]) -> None:
-    smalls = existing_smalls()
-    larges = existing_larges()
-    total_tasks = sum(img.id not in smalls for img in images) + sum(
-        img.id not in larges for img in images
-    )
-
     with ThreadPoolExecutor() as executor:
         futures = []
         for img in images:
-            if img.id not in smalls:
-                futures.append(executor.submit(create_thumbnail, img))
-            else:
-                smalls.remove(img.id)
+            futures.append(executor.submit(create_thumbnail, img))
+            futures.append(executor.submit(create_fullsize, img))
 
-            if img.id not in larges:
-                futures.append(executor.submit(create_fullsize, img))
-            else:
-                larges.remove(img.id)
-
-        # Iterate through completed futures and update the progress bar
-        for _ in tqdm(as_completed(futures), total=total_tasks, desc='Optimizing images'):
+        for _ in tqdm(as_completed(futures), total=len(images) * 2, desc='Optimizing'):
             pass
 
-    stale = smalls.union(larges)
-    print(len(stale), 'stale images')
+    desired = {f'{img.id}.webp' for img in images}
+    to_remove: List[str] = []
+
+    for root in ('small', 'large'):
+        existing = set(os.listdir(os.path.join(web_root, root)))
+        stale = existing - desired
+        for s in stale:
+            to_remove.append(os.path.join(web_root, root, s))
+
+    if to_remove:
+        for s in tqdm(to_remove, total=len(to_remove), desc='Cleaning  '):
+            os.remove(s)
 
 
 # PRIVATE
@@ -52,7 +47,8 @@ def convert(opts: List[str]) -> None:
 
 def create_thumbnail(image: Image) -> None:
     output = os.path.join(web_root, 'small', f'{image.id}.webp')
-    assert not os.path.exists(output)
+    if os.path.exists(output):
+        return
     convert(
         [
             '-quality',
@@ -65,7 +61,8 @@ def create_thumbnail(image: Image) -> None:
 
 def create_fullsize(image: Image) -> None:
     output = os.path.join(web_root, 'large', f'{image.id}.webp')
-    assert not os.path.exists(output)
+    if os.path.exists(output):
+        return
     convert(
         [
             '-quality',
@@ -74,13 +71,3 @@ def create_fullsize(image: Image) -> None:
             output,
         ]
     )
-
-
-@lru_cache(None)
-def existing_smalls() -> Set[str]:
-    return {c.strip('.webp') for c in os.listdir(os.path.join(web_root, 'small'))}
-
-
-@lru_cache(None)
-def existing_larges() -> Set[str]:
-    return {c.strip('.webp') for c in os.listdir(os.path.join(web_root, 'large'))}

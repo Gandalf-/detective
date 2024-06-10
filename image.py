@@ -62,7 +62,7 @@ def make_root(path: str) -> str:
 def load_category(category: str) -> List[Image]:
     images = []
 
-    for root in os.listdir(category):
+    for root in sorted(os.listdir(category)):
         root_path = os.path.join(category, root)
 
         if not os.path.isdir(root_path):
@@ -80,7 +80,7 @@ def load_category(category: str) -> List[Image]:
 def load_root(root: str) -> List[Image]:
     images: List[Image] = []
 
-    for filename in os.listdir(root):
+    for filename in sorted(os.listdir(root)):
         path = os.path.join(root, filename)
 
         if path.endswith('Undaria.Dan Abbott'):
