@@ -11,12 +11,11 @@ from version import VersionedResource
 ThumbsTable = List[List[str]]
 CreditTable = List[List[int]]
 SimiliarityTable = List[List[int]]
-DifficultyTable = List[int]
 
 
 def table_builder(
     tree: ImageTree,
-) -> Tuple[List[str], ThumbsTable, SimiliarityTable, DifficultyTable, List[str], CreditTable]:
+) -> Tuple[List[str], ThumbsTable, SimiliarityTable, List[str], CreditTable]:
     names = list(sorted(tree.keys()))
 
     people = list(sorted({img.credit for images in tree.values() for img in images}))
@@ -32,24 +31,22 @@ def table_builder(
             credit[i].append(who)
 
     similarity = _similarity_table(names)
-    diffs = _difficulties(names)
 
-    return names, thumbs, similarity, diffs, people, credit
+    return names, thumbs, similarity, people, credit
 
 
 def writer(tree: ImageTree) -> None:
-    ns, ts, ss, ds, ps, cs = table_builder(tree)
+    ns, ts, ss, ps, cs = table_builder(tree)
 
     # This saves 100KB of data, ~20% of the total
     ts = str(ts).replace(' ', '')
     ss = str(ss).replace(' ', '')
-    ds = str(ds).replace(' ', '')
+    cs = str(cs).replace(' ', '')
 
     with open('data.js', 'w+') as fd:
         print('var main_names =', ns, file=fd)
         print('var main_thumbs =', ts, file=fd)
         print('var main_similarities =', ss, file=fd)
-        print('var main_difficulties =', ds, file=fd)
         print('var main_people =', ps, file=fd)
         print('var main_credit =', cs, file=fd)
 
@@ -82,10 +79,6 @@ def _distance(a: str, b: str) -> float:
         match += 1 if x == y else 0
 
     return match / total
-
-
-def _difficulties(names: List[str]) -> DifficultyTable:
-    return [0 for _ in names]
 
 
 def _similarity_table(names: List[str]) -> SimiliarityTable:
@@ -142,11 +135,11 @@ def _html_builder(css: str, game: str, data: str) -> str:
                     <h3 id="points"></h3>
                 </div>
                 <select id="difficulty" onchange="choose_game();">
-                    <!-- <option value=0>Very Easy</option> -->
-                    <!-- <option value=1>Easy</option> -->
-                    <!-- <option value=2>Moderate</option> -->
+                    <option value=0>Very Easy</option>
+                    <option value=1>Easy</option>
+                    <option value=2>Moderate</option>
                     <option value=3 selected>Hard</option>
-                    <!-- <option value=4>Very Hard</option> -->
+                    <option value=4>Very Hard</option>
                 </select>
             </div>
 

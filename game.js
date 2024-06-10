@@ -7,7 +7,6 @@ var g_made_mistake = false;
 var g_names = [];
 var g_thumbs = [];
 var g_similarities = [];
-var g_difficulties = [];
 
 const g_lower_bound_table = [0, 15, 25, 40, 80];
 const g_upper_bound_table = [10, 25, 35, 40, 100];
@@ -23,10 +22,10 @@ const g_sample_table = [2, 2, 2, 1, 1];
 function name_game() {
     choose_dataset();
 
-    const difficulty = get_difficulty();
-    const correct = choose_correct(difficulty);
+    const correct = choose_correct();
     console.log(g_names[correct]);
 
+    const difficulty = get_difficulty();
     const lower_bound = g_lower_bound_table[difficulty];
     const upper_bound = g_upper_bound_table[difficulty];
     const count = g_count_table[difficulty];
@@ -58,7 +57,6 @@ function choose_dataset() {
     g_names = main_names;
     g_thumbs = main_thumbs;
     g_similarities = main_similarities;
-    g_difficulties = main_difficulties;
     g_people = main_people;
     g_credit = main_credit;
 }
@@ -264,7 +262,7 @@ function set_difficulty(value) {
  * @param {number} difficulty - The difficulty level to match.
  * @returns {number} The index of a creature that matches the difficulty level.
  */
-function choose_correct(difficulty) {
+function choose_correct() {
     const attempts = 10;
     let candidate;
 
@@ -275,10 +273,6 @@ function choose_correct(difficulty) {
 
     for (let i = 0; i < attempts; i++) {
         candidate = random(g_names.length);
-
-        if (g_difficulties[candidate] <= difficulty) {
-            break;
-        }
 
         console.log(g_names[candidate], 'is too difficult');
     }
