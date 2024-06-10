@@ -1,8 +1,11 @@
 #!/usr/bin/python3
 
+import os
 from typing import List, Tuple
 
+from hashes import web_root
 from species import ImageTree, build_image_tree
+from version import VersionedResource
 
 ThumbsTable = List[List[str]]
 SimiliarityTable = List[List[int]]
@@ -35,10 +38,21 @@ def writer() -> None:
     ds = str(ds).replace(' ', '')
 
     with open('data.js', 'w+') as fd:
-        print('var names =', ns, file=fd)
-        print('var thumbs =', ts, file=fd)
-        print('var similarities =', ss, file=fd)
-        print('var difficulties =', ds, file=fd)
+        print('var main_names =', ns, file=fd)
+        print('var main_thumbs =', ts, file=fd)
+        print('var main_similarities =', ss, file=fd)
+        print('var main_difficulties =', ds, file=fd)
+
+    css = VersionedResource('style.css', web_root)
+    game = VersionedResource('game.js', web_root)
+    data = VersionedResource('data.js', web_root)
+
+    for vr in [css, game, data]:
+        vr.cleanup()
+        vr.write()
+
+    with open(os.path.join(web_root, 'index.html'), 'w+') as fd:
+        print(_html_builder(css.name, game.name, data.name), file=fd, end='')
 
 
 # PRIVATE
@@ -87,7 +101,6 @@ def _html_builder(css: str, game: str, data: str) -> str:
         <meta name="description"
               content="{desc}">
         <link rel="stylesheet" href="/{css}" />
-        <link rel="stylesheet" href="/jquery.fancybox.min.css" />
         <script src="/{data}"></script>
         <script src="/{game}"></script>
         <style>
@@ -103,24 +116,8 @@ body {{
     <body>
         <div class="wrapper">
             <div class="title">
-                <a href="/timeline/">
-                    <h1 class="top switch timeline">📅</h1>
-                </a>
-                <div class="top buffer"></div>
-                <a href="/gallery/">
-                    <h1 class="top switch gallery">📸</h1>
-                </a>
-                <div class="top buffer"></div>
                 <a href="/detective/">
                     <h1 class="top switch detective">Detective</h1>
-                </a>
-                <div class="top buffer"></div>
-                <a href="/sites/">
-                    <h1 class="top switch sites">🌎</h1>
-                </a>
-                <div class="top buffer"></div>
-                <a href="/taxonomy/">
-                    <h1 class="top switch taxonomy">🔬</h1>
                 </a>
                 <p class="scientific"></p>
             </div>
@@ -168,3 +165,7 @@ body {{
     </body>
 </html>
 """
+
+
+if __name__ == '__main__':
+    writer()

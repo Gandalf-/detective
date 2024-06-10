@@ -1,0 +1,481 @@
+/* Ensure the container of the image doesn't let the zoomed image overflow */
+.zoom-wrapper {
+  overflow: hidden;
+  transition: overflow 0.5s;
+}
+
+.zoom {
+  transition: transform 0.5s ease;
+}
+
+.zoom:hover {
+  transform: scale(1.05);
+  /* Slightly enlarge the image on hover */
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+
+.info {
+  max-width: 800px;
+  margin: 0 auto;
+  float: none !important;
+  text-align: justify;
+  /* text-justify: inter-word; */
+}
+
+.grid+.info {
+  margin-top: 2em;
+}
+
+img {
+  width: 100%;
+  display: inline-block;
+}
+
+.clip {
+  width: 100%;
+  height: 100%;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.wrapper {
+  min-height: calc(100vh - 70px);
+  padding-bottom: 2.5rem;
+}
+
+footer p {
+  flex-grow: 1;
+}
+
+footer>p:first-child {
+  display: inline-flex;
+}
+
+footer {
+  display: flex;
+  height: 2.5rem;
+  text-align: right;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  margin-right: 1em;
+  margin-bottom: 0.5em;
+}
+
+body {
+  background-color: black;
+  text-align: center;
+  /* font-family: Georgia, serif; */
+  position: relative;
+}
+
+figcaption,
+h1,
+h2,
+h3,
+h4,
+p {
+  color: white;
+}
+
+.tight {
+  margin-top: 0px;
+  margin-bottom: 0.5em;
+}
+
+.top {
+  display: inline-block;
+  border: 1px solid white;
+  padding: 0.1em 0.5em;
+  border-radius: 2em;
+  margin-block-end: 0em;
+  margin-block-start: 0em;
+  margin-bottom: 0.2em;
+}
+
+.where {
+  display: inline-block;
+  border: 1px solid white;
+  padding: 0.1em 0.5em;
+  border-radius: 5em;
+  margin-block-end: 0em;
+}
+
+.top:hover,
+.where:hover {
+  border: 1px solid white;
+}
+
+.nolink,
+.nolink:hover,
+.buffer:hover {
+  border: 1px solid black;
+}
+
+.scientific {
+  margin-top: 0.67em;
+  margin-bottom: 0.67em;
+  font-style: italic;
+}
+
+.search {
+  display: flex;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0.67em auto;
+}
+
+.search_random {
+  display: inline-flex;
+}
+
+.search_text {
+  display: inline-flex;
+  flex-grow: 1;
+}
+
+#search_bar {
+  margin: 0 1em;
+  flex-grow: 1;
+}
+
+.search_results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.67em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.have_results {
+  margin-bottom: 0.67em;
+}
+
+.search_result {
+  /* text-transform: capitalize; */
+  cursor: pointer;
+  flex-grow: 1;
+  /* display: inline-block; */
+
+  border: 1px solid white;
+  border-radius: 2em;
+
+  padding: 0.1em 0.5em;
+  padding-bottom: 0em;
+  padding-top: 0em;
+
+  margin-block-end: 0em;
+  margin-block-start: 0em;
+  margin-bottom: 0.2em;
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+}
+
+.search_scroll {
+  flex-grow: 0;
+  min-width: 5em;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.crosslink {
+  text-decoration: underline !important;
+  display: block;
+  color: white;
+}
+
+footer a,
+.info a {
+  text-decoration: underline !important;
+  color: white;
+}
+
+.sneaky {
+  color: #000000;
+  float: left;
+  /* margin-left: 0.5em; */
+}
+
+.count {
+  color: #808080;
+  float: right;
+  /* margin-right: 0.5em; */
+}
+
+.ref {
+  text-align: right;
+  font-style: italic;
+}
+
+.switch {
+  border-color: rgb(56, 19, 221);
+}
+
+.buffer {
+  border: 1px solid black;
+}
+
+.title_spacer {
+  width: 1em;
+  display: inline-block;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+.image {
+  border: 1px solid black;
+  max-width: 350px;
+}
+
+.image:hover {
+  border: 1px solid white;
+}
+
+#correct_outer > h2 {
+  margin-bottom: 0;
+}
+
+.correct_name>.image:hover {
+  border: 1px solid black;
+}
+
+.title {
+  position: sticky;
+  background-color: black;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 0.2em 0em;
+}
+
+.correct_name {
+  justify-content: center;
+  height: 100%;
+}
+
+#options {
+  padding-top: 1em;
+}
+
+select {
+  border-radius: 2em;
+  color: white;
+  background-color: black;
+  text-align: center;
+  height: 3em;
+}
+
+.scoring {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.scoring h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+#control select {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+#control {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10ch, max-content));
+  justify-content: center;
+  margin-bottom: 1em;
+  /* grid-gap: 0.75rem; */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+  justify-content: center;
+  grid-gap: 0.75rem;
+}
+
+.gallery {
+  border-color: green;
+}
+
+.taxonomy {
+  border-color: yellow;
+}
+
+.timeline {
+  border-color: rgb(56, 19, 221);
+}
+
+.sites {
+  border-color: #fe5a1d;
+}
+
+.detective {
+  border-color: red;
+}
+
+div.skip {
+  border-color: gray;
+  display: table;
+  overflow: hidden;
+}
+
+/* card flip for images */
+.card {
+  width: 100%;
+  transition: transform 0.5s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  position: relative;
+  max-width: 350px;
+  padding-top: 75%;
+}
+
+.card img {
+  height: 100%;
+}
+
+.image img {
+  /* Need space for the label */
+  height: 86%;
+}
+
+#options .image img {
+  /* but not on detective */
+  height: 100%;
+}
+
+.card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card_face {
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.card_face-back {
+  background: black;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card_face-back a {
+  color: white;
+}
+
+.elem {
+  background: black;
+  flex: 1;
+  border-radius: 1em;
+  width: 90%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.3em;
+}
+
+.pad-down {
+  margin-bottom: 0.5em;
+}
+
+@media (max-width: 520px) {
+
+  /* typical phones */
+  html {
+    font-size: 12px;
+  }
+
+  h1 {
+    font-size: 1.75em;
+  }
+
+  .buffer {
+    border: 1px solid black;
+  }
+
+  .correct_name {
+    justify-content: center;
+    height: 100%;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(48%, max-content));
+    justify-content: center;
+    grid-gap: 0.75rem;
+  }
+
+  select {
+    height: 2em;
+  }
+}
+
+@media (max-width: 380px) {
+
+  /* iphones have tiny width */
+  h1 {
+    font-size: 1.40em;
+  }
+
+  h2 {
+    font-size: 1em;
+  }
+
+  .buffer {
+    border: 1px solid black;
+  }
+}
+
+@media (min-width: 480px) {
+  html {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 992px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1200px) {
+  html {
+    font-size: 16px;
+  }
+}

@@ -1,7 +1,5 @@
 .vscode
 __pycache__
-util/__pycache__
-data/db.json.tmp
 .mypy_cache
 .ruff_cache
 tags
@@ -9,3 +7,4 @@ tags
 profile.*
 .DS_Store
 *.sync-conflict*
+data.js

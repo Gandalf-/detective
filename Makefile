@@ -12,8 +12,11 @@ format:
 	ruff format *.py
 
 
-.PHONY: test unittest
+.PHONY: test unittest serve
 test: unittest
 
 unittest:
 	python3 -m unittest
+
+serve:
+	@serve ~/working/object-publish/detective
