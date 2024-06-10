@@ -111,14 +111,6 @@ def _html_builder(css: str, game: str, data: str) -> str:
         <link rel="stylesheet" href="/{css}" />
         <script src="/{data}"></script>
         <script src="/{game}"></script>
-        <style>
-body {{
-    max-width: 1080px;
-    margin-left: auto;
-    margin-right: auto;
-    float: none !important;
-}}
-        </style>
     </head>
 
     <body>
@@ -174,7 +166,7 @@ body {{
 
 
 def main() -> None:
-    limit = 5
+    limit = 10
     tree = build_image_tree()
     tree = {k: tree[k][:limit] for k in list(tree)}
 

@@ -17,37 +17,6 @@ const g_sample_table = [2, 2, 2, 1, 1];
 /* game logic */
 
 /*
- * the player is given a name and must choose it's image from the
- * options below
- */
-function image_game() {
-    choose_dataset();
-    const difficulty = get_difficulty();
-    const correct = choose_correct(difficulty);
-    console.log(g_names[correct]);
-
-    const lower_bound = g_lower_bound_table[difficulty];
-    const upper_bound = g_upper_bound_table[difficulty];
-    const count = g_count_table[difficulty];
-    const options = find_similar(correct, lower_bound, upper_bound, count - 1);
-
-    set_correct_image(correct);
-    const actual = random(count);
-
-    for (let i = 0, w = 0; i < count; i++) {
-        const child = document.createElement('div');
-        child.classList.add('image');
-        child.id = 'option' + i;
-        document.getElementById('options').appendChild(child);
-
-        const callback = i === actual ? 'success();' : 'failure(this);';
-        const option = i === actual ? correct : options[w++];
-        set_thumbnail('option' + i, option, callback, 'Unknown');
-    }
-    add_skip();
-}
-
-/*
  * the player is given a single image and must choose it's name from the
  * options below
  */
@@ -100,13 +69,7 @@ function choose_game() {
     g_made_mistake = false;
     update_score();
     reset_options();
-
-    var game = byId('game').value;
-    if (game == 'images') {
-        image_game();
-    } else if (game == 'names') {
-        name_game();
-    }
+    name_game();
 }
 
 function set_text(where, what, onclick) {
@@ -122,28 +85,6 @@ function set_text(where, what, onclick) {
     child.innerHTML = name;
 
     option.appendChild(child);
-}
-
-function set_thumbnail(where, what, onclick, thumb, person) {
-    thumb = thumb || g_thumbs[what][random(g_thumbs[what].length)];
-
-    var img = document.createElement('img');
-    img.src = '/small/' + thumb + '.webp';
-
-    if (onclick) {
-        img.onclick = function() {
-            eval(onclick);
-        };
-    }
-
-    var target = document.getElementById(where);
-    target.innerHTML = '';
-    target.appendChild(img);
-
-    var credit = document.createElement('p');
-    credit.classList.add('credit');
-    credit.innerHTML = person || 'Unknown';
-    target.appendChild(credit);
 }
 
 function update_score() {
@@ -199,6 +140,24 @@ function set_correct_image(correct) {
     outer.appendChild(child);
 }
 
+function set_thumbnail(where, what, thumb, person) {
+    thumb = thumb || g_thumbs[what][random(g_thumbs[what].length)];
+
+    var img = document.createElement('img');
+    img.src = '/small/' + thumb + '.webp';
+
+    var credit = document.createElement('p');
+    credit.classList.add('credit');
+    credit.innerHTML = person;
+
+    img.onload = function() {
+      const target = document.getElementById(where);
+      target.innerHTML = '';
+      target.appendChild(img);
+      target.appendChild(credit);
+    };
+}
+
 /**
  * Set the correct creature name and thumbnails on the game board.
  *
@@ -206,10 +165,6 @@ function set_correct_image(correct) {
  * @param {string} previous - The last thumbnail hash, optional
  */
 function set_correct_name(correct, previous) {
-    const outer = byId('correct_outer');
-    outer.classList.add('grid', 'correct_name');
-    outer.innerHTML = '';
-
     const images = shuffle([...g_thumbs[correct]]);
 
     var i = 0;
@@ -221,12 +176,7 @@ function set_correct_name(correct, previous) {
     const who = g_credit[correct][i];
     console.log('credit', g_people[who]);
 
-    const child = document.createElement('div');
-    child.classList.add('choice');
-    child.setAttribute('id', `correct`);
-    outer.appendChild(child);
-
-    set_thumbnail(`correct`, correct, null, images[i], g_people[who]);
+    set_thumbnail(`correct`, correct, images[i], g_people[who]);
 }
 
 /*        _   _ _ _ _

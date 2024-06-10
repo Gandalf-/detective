@@ -79,6 +79,11 @@ body {
   text-align: center;
   /* font-family: Georgia, serif; */
   position: relative;
+
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+  float: none !important;
 }
 
 figcaption,
@@ -407,6 +412,13 @@ div.skip {
 
 .pad-down {
   margin-bottom: 0.5em;
+}
+
+.credit {
+  color: white;
+  font-size: smaller;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
 }
 
 @media (max-width: 520px) {

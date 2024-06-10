@@ -25,12 +25,20 @@ def create_webp(images: List[Image]) -> None:
         for img in images:
             if img.id not in smalls:
                 futures.append(executor.submit(create_thumbnail, img))
+            else:
+                smalls.remove(img.id)
+
             if img.id not in larges:
                 futures.append(executor.submit(create_fullsize, img))
+            else:
+                larges.remove(img.id)
 
         # Iterate through completed futures and update the progress bar
         for _ in tqdm(as_completed(futures), total=total_tasks, desc='Optimizing images'):
             pass
+
+    stale = smalls.union(larges)
+    print(len(stale), 'stale images')
 
 
 # PRIVATE
