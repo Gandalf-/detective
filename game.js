@@ -238,7 +238,7 @@ function add_zoom() {
         var img = byId('correct').firstChild;
 
         img.src = current.replace('/small/', '/large/');
-        img.style.maxWidth = '90%';
+        img.style.maxWidth = '100%';
         img.style.height = 'auto';
     }
 

@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 from hashes import create_webp, web_root
 from species import ImageTree, build_image_tree
+from taxonomy import load_taxonomy
 from version import VersionedResource
 
 ThumbsTable = List[List[str]]
@@ -68,7 +69,19 @@ def writer(tree: ImageTree) -> None:
 
 
 def _distance(a: str, b: str) -> float:
-    return 1
+    tree = load_taxonomy()
+
+    at = tree[a].split(' ')
+    bt = tree[b].split(' ')
+
+    total = 0
+    match = 0
+
+    for x, y in zip(at, bt):
+        total += 1
+        match += 1 if x == y else 0
+
+    return match / total
 
 
 def _difficulties(names: List[str]) -> DifficultyTable:
@@ -137,8 +150,8 @@ def _html_builder(css: str, game: str, data: str) -> str:
                 </select>
             </div>
 
-            <div id="correct_outer">
-                <h2 id="correct"></h2>
+            <div id="correct_outer" class="grid correct_name">
+                <div class="choice" id="correct"> </div>
             </div>
 
             <div class="grid" id="options">

@@ -33,8 +33,8 @@ class Image:
             'Sargassum horneri': 'Horn Weed',
             'Laminaria setchelii': 'Torn Kelp',
             'Sargassum muticum': 'Wire Weed',
-            'Five-ribbed Kelp': 'Five ribbed Kelp',
             'Three-ribbed Kelp': 'Three ribbed Kelp',
+            'Five-ribbed Kelp': 'Five ribbed Kelp',
             "Stimpson's Sun Star": 'Blue Striped Sun Star',
             'False Ochre Star': 'Mottled Star',
         }
