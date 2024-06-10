@@ -112,7 +112,3 @@ class TestLoad(unittest.TestCase):
     @unittest.skip('Not implemented')
     def test_hyphen_author(self) -> None:
         self.fail('Shou-Wei Chang')
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -13,7 +13,3 @@ class TestTableBuilder(unittest.TestCase):
 
         ns, ts, ss, ps, cs = web.table_builder(tree)
         self.assertEqual(ns, ['Acid Weed', 'Broad Ribbed Kelp', 'Bull Kelp'])
-
-
-if __name__ == '__main__':
-    unittest.main()

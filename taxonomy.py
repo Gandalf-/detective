@@ -9,14 +9,12 @@ import yaml
 
 @lru_cache(None)
 def load_taxonomy() -> Dict[str, str]:
-    yml_path = str(pathlib.Path(__file__).parent.absolute()) + '/simple.yml'
+    yml_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/taxonomy.yml'
 
     with open(yml_path) as fd:
         data = yaml.safe_load(fd)
 
-    result = invert_mapping(data)
-
-    return result
+    return invert_mapping(data)
 
 
 def invert_mapping(mapping: Any) -> Dict[str, str]:

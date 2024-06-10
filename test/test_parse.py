@@ -101,7 +101,3 @@ class TestParseName(unittest.TestCase):
     def test_apostrophe(self) -> None:
         filename = "GiantKelp_TomO'Leary.jpg"
         self.assertEqual(parse.parse_name(filename), ('Giant Kelp', "Tom O'Leary"))
-
-
-if __name__ == '__main__':
-    unittest.main()

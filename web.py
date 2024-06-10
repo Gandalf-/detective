@@ -43,7 +43,7 @@ def writer(tree: ImageTree) -> None:
     ss = str(ss).replace(' ', '')
     cs = str(cs).replace(' ', '')
 
-    with open('data.js', 'w+') as fd:
+    with open('/tmp/data.js', 'w+') as fd:
         print('var main_names =', ns, file=fd)
         print('var main_thumbs =', ts, file=fd)
         print('var main_similarities =', ss, file=fd)
@@ -52,7 +52,7 @@ def writer(tree: ImageTree) -> None:
 
     css = VersionedResource('style.css', web_root)
     game = VersionedResource('game.js', web_root)
-    data = VersionedResource('data.js', web_root)
+    data = VersionedResource('/tmp/data.js', web_root)
 
     for vr in [css, game, data]:
         vr.cleanup()

@@ -18,7 +18,3 @@ class TestTaxonomy(unittest.TestCase):
 
         for spec in species_list:
             self.assertIn(spec.common, tx.keys(), f'{spec.common} not in taxonomy')
-
-
-if __name__ == '__main__':
-    unittest.main()

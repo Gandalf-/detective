@@ -68,7 +68,3 @@ class TestImageTree(unittest.TestCase):
 def get_by_code(code: str) -> Species:
     species_list = species.load_species()
     return next((spec for spec in species_list if spec.code == code))
-
-
-if __name__ == '__main__':
-    unittest.main()
