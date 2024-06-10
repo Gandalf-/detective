@@ -19,3 +19,7 @@ pretty = true
 [[tool.mypy.overrides]]
 module = "apocrypha.*"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tqdm.*"
+ignore_missing_imports = true

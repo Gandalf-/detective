@@ -42,7 +42,7 @@ function image_game() {
 
         const callback = i === actual ? 'success();' : 'failure(this);';
         const option = i === actual ? correct : options[w++];
-        set_thumbnail('option' + i, option, callback);
+        set_thumbnail('option' + i, option, callback, 'Unknown');
     }
     add_skip();
 }
@@ -90,6 +90,8 @@ function choose_dataset() {
     g_thumbs = main_thumbs;
     g_similarities = main_similarities;
     g_difficulties = main_difficulties;
+    g_people = main_people;
+    g_credit = main_credit;
 }
 
 /* HTML modifying utilities */
@@ -122,13 +124,11 @@ function set_text(where, what, onclick) {
     option.appendChild(child);
 }
 
-function set_thumbnail(where, what, onclick, thumb) {
+function set_thumbnail(where, what, onclick, thumb, person) {
     thumb = thumb || g_thumbs[what][random(g_thumbs[what].length)];
 
     var img = document.createElement('img');
     img.src = '/small/' + thumb + '.webp';
-    img.width = 350;
-    img.height = 263;
 
     if (onclick) {
         img.onclick = function() {
@@ -139,6 +139,11 @@ function set_thumbnail(where, what, onclick, thumb) {
     var target = document.getElementById(where);
     target.innerHTML = '';
     target.appendChild(img);
+
+    var credit = document.createElement('p');
+    credit.classList.add('credit');
+    credit.innerHTML = person || 'Unknown';
+    target.appendChild(credit);
 }
 
 function update_score() {
@@ -213,12 +218,15 @@ function set_correct_name(correct, previous) {
     }
     console.log('chose', images[i], 'as the correct image');
 
+    const who = g_credit[correct][i];
+    console.log('credit', g_people[who]);
+
     const child = document.createElement('div');
     child.classList.add('choice');
     child.setAttribute('id', `correct`);
     outer.appendChild(child);
 
-    set_thumbnail(`correct`, correct, null, images[i]);
+    set_thumbnail(`correct`, correct, null, images[i], g_people[who]);
 }
 
 /*        _   _ _ _ _
@@ -280,9 +288,7 @@ function add_zoom() {
         var img = byId('correct').firstChild;
 
         img.src = current.replace('/small/', '/large/');
-        img.width = 700;
-        img.height = 526;
-        img.style.maxWidth = '90vw';
+        img.style.maxWidth = '90%';
         img.style.height = 'auto';
     }
 

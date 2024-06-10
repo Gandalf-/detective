@@ -109,6 +109,10 @@ class TestLoad(unittest.TestCase):
 
             self.assertEqual(images[0].g_label, expected)
 
+    @unittest.skip('Not implemented')
+    def test_hyphen_author(self) -> None:
+        self.fail('Shou-Wei Chang')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,34 +3,41 @@
 import os
 from typing import List, Tuple
 
-from hashes import web_root
+from hashes import create_webp, web_root
 from species import ImageTree, build_image_tree
 from version import VersionedResource
 
 ThumbsTable = List[List[str]]
+CreditTable = List[List[int]]
 SimiliarityTable = List[List[int]]
 DifficultyTable = List[int]
 
 
 def table_builder(
     tree: ImageTree,
-) -> Tuple[List[str], ThumbsTable, SimiliarityTable, DifficultyTable]:
+) -> Tuple[List[str], ThumbsTable, SimiliarityTable, DifficultyTable, List[str], CreditTable]:
     names = list(sorted(tree.keys()))
 
+    people = list(sorted({img.credit for images in tree.values() for img in images}))
     thumbs: ThumbsTable = [[] for _ in names]
+    credit: CreditTable = [[] for _ in names]
+
     for i, name in enumerate(names):
         images = tree[name]
-        thumbs[i] = [img.id for img in images][:20]
+        thumbs[i] = [img.id for img in images]
+
+        for img in images:
+            who = people.index(img.credit)
+            credit[i].append(who)
 
     similarity = _similarity_table(names)
     diffs = _difficulties(names)
 
-    return names, thumbs, similarity, diffs
+    return names, thumbs, similarity, diffs, people, credit
 
 
-def writer() -> None:
-    tree = build_image_tree()
-    ns, ts, ss, ds = table_builder(tree)
+def writer(tree: ImageTree) -> None:
+    ns, ts, ss, ds, ps, cs = table_builder(tree)
 
     # This saves 100KB of data, ~20% of the total
     ts = str(ts).replace(' ', '')
@@ -42,6 +49,8 @@ def writer() -> None:
         print('var main_thumbs =', ts, file=fd)
         print('var main_similarities =', ss, file=fd)
         print('var main_difficulties =', ds, file=fd)
+        print('var main_people =', ps, file=fd)
+        print('var main_credit =', cs, file=fd)
 
     css = VersionedResource('style.css', web_root)
     game = VersionedResource('game.js', web_root)
@@ -98,8 +107,7 @@ def _html_builder(css: str, game: str, data: str) -> str:
         <link rel="canonical" href="https://detective.anardil.net/" />
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description"
-              content="{desc}">
+        <meta name="description" content="{desc}">
         <link rel="stylesheet" href="/{css}" />
         <script src="/{data}"></script>
         <script src="/{game}"></script>
@@ -116,26 +124,24 @@ body {{
     <body>
         <div class="wrapper">
             <div class="title">
-                <a href="/detective/">
-                    <h1 class="top switch detective">Detective</h1>
-                </a>
+                <h1 class="top switch detective">Detective</h1>
                 <p class="scientific"></p>
             </div>
             <div id="control">
                 <select id="game" onchange="choose_game();">
                     <option value="names">Names</option>
-                    <option value="images">Images</option>
+                    <!-- <option value="images">Images</option> -->
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>
                     <h3 id="points"></h3>
                 </div>
                 <select id="difficulty" onchange="choose_game();">
-                    <option value=0>Very Easy</option>
-                    <option value=1 selected>Easy</option>
-                    <option value=2>Moderate</option>
-                    <option value=3>Hard</option>
-                    <option value=4>Very Hard</option>
+                    <!-- <option value=0>Very Easy</option> -->
+                    <!-- <option value=1>Easy</option> -->
+                    <!-- <option value=2>Moderate</option> -->
+                    <option value=3 selected>Hard</option>
+                    <!-- <option value=4>Very Hard</option> -->
                 </select>
             </div>
 
@@ -167,5 +173,16 @@ body {{
 """
 
 
+def main() -> None:
+    limit = 5
+    tree = build_image_tree()
+    tree = {k: tree[k][:limit] for k in list(tree)}
+
+    writer(tree)
+
+    images = [img for img_list in tree.values() for img in img_list]
+    create_webp(images)
+
+
 if __name__ == '__main__':
-    writer()
+    main()
