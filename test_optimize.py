@@ -2,10 +2,10 @@
 
 import unittest
 
-import hashes
+import optimize
 
 
-class TestHashes(unittest.TestCase):
+class TestOptimize(unittest.TestCase):
     def test_quality_hashes(self) -> None:
         pass
 

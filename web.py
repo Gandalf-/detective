@@ -3,7 +3,7 @@
 import os
 from typing import List, Tuple
 
-from hashes import create_webp, web_root
+from optimize import create_webp, web_root
 from species import ImageTree, build_image_tree
 from taxonomy import load_taxonomy
 from version import VersionedResource
@@ -104,7 +104,7 @@ def _similarity_table(names: List[str]) -> SimiliarityTable:
 
 def _html_builder(css: str, game: str, data: str) -> str:
     """Insert dynamic content into the HTML template"""
-    desc = 'Scuba diving picture identification game, identify a picture or choose the image for a name'
+    desc = 'Test your Reef Check ID expertise with professionally labeled images.'
     return f"""
 <!DOCTYPE html>
 <html>
@@ -127,8 +127,7 @@ def _html_builder(css: str, game: str, data: str) -> str:
             </div>
             <div id="control">
                 <select id="game" onchange="choose_game();">
-                    <option value="names">Names</option>
-                    <!-- <option value="images">Images</option> -->
+                    <option value="names">Washington</option>
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>
@@ -172,7 +171,7 @@ def _html_builder(css: str, game: str, data: str) -> str:
 
 
 def main() -> None:
-    limit = 10
+    limit = 20
     tree = build_image_tree()
     tree = {k: tree[k][:limit] for k in list(tree)}
 
