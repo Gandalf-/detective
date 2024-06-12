@@ -2,7 +2,6 @@
 
 import unittest
 
-import optimize
 
 
 class TestOptimize(unittest.TestCase):

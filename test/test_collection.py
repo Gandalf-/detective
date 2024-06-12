@@ -3,13 +3,13 @@
 import os
 import unittest
 
-import image
+import collection
 
 
 class TestLoad(unittest.TestCase):
     def test_load_bull_kelp(self) -> None:
-        bull_kelp_root = image.make_root('Algae/Bull Kelp')
-        images = image.load_root(bull_kelp_root)
+        bull_kelp_root = collection.make_root('Algae/Bull Kelp')
+        images = collection.load_root(bull_kelp_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -21,8 +21,8 @@ class TestLoad(unittest.TestCase):
             self.assertEqual(img.g_label, 'Bull Kelp')
 
     def test_load_acid_weed(self) -> None:
-        acid_weed_root = image.make_root('Algae/Acid Weed (Desmarestia ligulata)')
-        images = image.load_root(acid_weed_root)
+        acid_weed_root = collection.make_root('Algae/Acid Weed (Desmarestia ligulata)')
+        images = collection.load_root(acid_weed_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -34,8 +34,8 @@ class TestLoad(unittest.TestCase):
             self.assertEqual(img.g_label, 'Acid Weed')
 
     def test_load_algae(self) -> None:
-        algae_root = image.make_root('Algae')
-        images = image.load_category(algae_root)
+        algae_root = collection.make_root('Algae')
+        images = collection.load_category(algae_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -43,8 +43,8 @@ class TestLoad(unittest.TestCase):
             self.assertNotEqual(img.credit, '', img)
 
     def test_load_fish(self) -> None:
-        fish_root = image.make_root('Fish')
-        images = image.load_category(fish_root)
+        fish_root = collection.make_root('Fish')
+        images = collection.load_category(fish_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -52,8 +52,8 @@ class TestLoad(unittest.TestCase):
             self.assertNotEqual(img.credit, '', img)
 
     def test_load_inverts(self) -> None:
-        inverts_root = image.make_root('Inverts')
-        images = image.load_category(inverts_root)
+        inverts_root = collection.make_root('Inverts')
+        images = collection.load_category(inverts_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -61,25 +61,25 @@ class TestLoad(unittest.TestCase):
             self.assertNotEqual(img.credit, '', img)
 
     def test_credits(self) -> None:
-        images = image.load_everything()
+        images = collection.load_images()
         people = {img.credit for img in images}
         self.assertIn('Dan Abbott', people)
 
     def test_uniqueness(self) -> None:
-        images = image.load_everything()
+        images = collection.load_images()
         ids = {img.id for img in images}
         self.assertEqual(len(ids), len(images))
 
     def test_ignored_categories(self) -> None:
-        fish_root = image.make_root('Fish')
-        images = image.load_category(fish_root)
+        fish_root = collection.make_root('Fish')
+        images = collection.load_category(fish_root)
 
         for img in images:
             self.assertNotEqual(img.g_label, 'YOY')
 
     def test_sub_category(self) -> None:
-        greenling_root = image.make_root('Fish/Kelp Greenling')
-        images = image.load_root(greenling_root)
+        greenling_root = collection.make_root('Fish/Kelp Greenling')
+        images = collection.load_root(greenling_root)
         self.assertNotEqual(images, [])
 
         for img in images:
@@ -103,8 +103,8 @@ class TestLoad(unittest.TestCase):
 
         for case in cases:
             original, expected = case
-            root = image.make_root(original)
-            images = image.load_root(root)
+            root = collection.make_root(original)
+            images = collection.load_root(root)
             self.assertNotEqual(images, [])
 
             self.assertEqual(images[0].g_label, expected)

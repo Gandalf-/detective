@@ -4,6 +4,7 @@ import os
 from typing import List, Tuple
 
 from optimize import create_webp, web_root
+from quality import record_all_dimensions
 from species import ImageTree, build_image_tree
 from taxonomy import load_taxonomy
 from version import VersionedResource
@@ -171,6 +172,8 @@ def _html_builder(css: str, game: str, data: str) -> str:
 
 
 def main() -> None:
+    record_all_dimensions()
+
     limit = 20
     tree = build_image_tree()
     tree = {k: tree[k][:limit] for k in list(tree)}

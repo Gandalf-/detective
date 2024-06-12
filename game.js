@@ -146,7 +146,7 @@ function set_thumbnail(where, what, thumb, person) {
 
     var credit = document.createElement('p');
     credit.classList.add('credit');
-    credit.innerHTML = person;
+    credit.innerHTML = `Photographer: ${person}`;
 
     img.onload = function() {
       const target = document.getElementById(where);

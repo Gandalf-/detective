@@ -5,7 +5,8 @@ import pathlib
 from functools import lru_cache
 from typing import Dict, List
 
-from image import Image, load_everything
+from collection import load_images
+from image import Image
 
 
 class Species:
@@ -55,7 +56,7 @@ def build_image_tree() -> ImageTree:
     all_common = {spec.common for spec in species}
     non_reef = set()
 
-    for img in load_everything():
+    for img in load_images():
         if img.g_label in all_common:
             tree.setdefault(img.g_label, []).append(img)
         else:
