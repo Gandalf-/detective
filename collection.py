@@ -6,6 +6,7 @@ from typing import List
 
 from image import Image
 from parse import parse_name
+from quality import low_quality
 
 image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
 
@@ -73,6 +74,9 @@ def load_root(root: str) -> List[Image]:
             continue
 
         image = Image(path, label, credit)
+        if low_quality(image):
+            continue
+
         images.append(image)
 
     return images

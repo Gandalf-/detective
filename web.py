@@ -3,6 +3,7 @@
 import os
 from typing import List, Tuple
 
+from collection import load_images
 from optimize import create_webp, web_root
 from quality import record_all_dimensions
 from species import ImageTree, build_image_tree
@@ -172,7 +173,7 @@ def _html_builder(css: str, game: str, data: str) -> str:
 
 
 def main() -> None:
-    record_all_dimensions()
+    record_all_dimensions(load_images())
 
     limit = 20
     tree = build_image_tree()

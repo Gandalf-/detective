@@ -4,16 +4,20 @@ import pathlib
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import lru_cache
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from tqdm import tqdm
 
-from collection import load_images
 from image import Image
 
 
-def record_all_dimensions() -> None:
-    images = load_images()
+def low_quality(image: Image) -> bool:
+    known = load_dimensions()
+    width, height = known[image.id]
+    return width <= 600
+
+
+def record_all_dimensions(images: List[Image]) -> None:
     known = load_dimensions()
 
     missing = [img for img in images if img.id not in known]
@@ -30,11 +34,6 @@ def record_all_dimensions() -> None:
                 print(result.result(), file=fd)
 
 
-# PRIVATE
-
-csv_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/quality.csv'
-
-
 @lru_cache(None)
 def load_dimensions() -> Dict[str, Tuple[int, int]]:
     result: Dict[str, Tuple[int, int]] = {}
@@ -45,6 +44,11 @@ def load_dimensions() -> Dict[str, Tuple[int, int]]:
             result[img] = (int(width), int(height))
 
     return result
+
+
+# PRIVATE
+
+csv_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/quality.csv'
 
 
 def dimensions(image: Image) -> str:
