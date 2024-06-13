@@ -53,12 +53,12 @@ function name_game() {
 }
 
 function choose_dataset() {
-    g_names = main_names;
-    g_thumbs = main_thumbs;
-    g_similarities = main_similarities;
-    g_people = main_people;
-    g_credit = main_credit;
-    g_categories = main_categories;
+    g_names = data_names;
+    g_thumbs = data_thumbs;
+    g_similarities = data_similarities;
+    g_people = data_people;
+    g_credit = data_credit;
+    g_categories = data_categories;
 }
 
 /* HTML modifying utilities */

@@ -3,13 +3,12 @@
 import os
 from typing import Dict, List, Tuple
 
-from collection import load_images
-from image import Image
+import collection
+import optimize
+import quality
+import taxonomy
 from metrics import metrics
-from optimize import create_webp, web_root
-from quality import record_all_dimensions
 from species import ImageTree, build_image_tree
-from taxonomy import load_taxonomy
 from version import VersionedResource
 
 ThumbsTable = List[List[str]]
@@ -19,13 +18,12 @@ SimiliarityTable = List[List[int]]
 
 def table_builder(
     tree: ImageTree,
-) -> Tuple[List[str], ThumbsTable, SimiliarityTable, List[str], CreditTable]:
+) -> Tuple[List[str], ThumbsTable, List[str], CreditTable]:
     names = list(sorted(tree.keys()))
-
     people = list(sorted({img.credit for images in tree.values() for img in images}))
+
     thumbs: ThumbsTable = [[] for _ in names]
     credit: CreditTable = [[] for _ in names]
-
     for i, name in enumerate(names):
         images = tree[name]
         thumbs[i] = [img.id for img in images]
@@ -34,66 +32,42 @@ def table_builder(
             who = people.index(img.credit)
             credit[i].append(who)
 
-    similarity = _similarity_table(names)
-
-    return names, thumbs, similarity, people, credit
-
-
-def category_indices(examples: List[Image]) -> Dict[str, List[int]]:
-    indicies: Dict[str, List[int]] = {
-        'Washington': [],
-        'Fish': [],
-        'Inverts': [],
-        'Algae': [],
-    }
-
-    for i, img in enumerate(examples):
-        indicies['Washington'].append(i)
-        indicies[img.category].append(i)
-
-    return indicies
+    return names, thumbs, people, credit
 
 
 def writer(tree: ImageTree) -> None:
-    names, thumbs, similarity, people, credit = table_builder(tree)
-
-    # This saves ~20% of the total
+    names, thumbs, people, credit = table_builder(tree)
     thumbs = str(thumbs).replace(' ', '')
-    similarity = str(similarity).replace(' ', '')
     credit = str(credit).replace(' ', '')
 
-    examples = []
-    for name in sorted(tree):
-        examples.append(tree[name][0])
+    similarity = similarity_table(names)
+    similarity = str(similarity).replace(' ', '')
 
-    categories = category_indices(examples)
+    categories = category_indices(tree)
     categories = str(categories).replace(' ', '')
 
     with open('/tmp/data.js', 'w+') as fd:
-        print('var main_names =', names, file=fd)
-        print('var main_thumbs =', thumbs, file=fd)
-        print('var main_similarities =', similarity, file=fd)
-        print('var main_people =', people, file=fd)
-        print('var main_credit =', credit, file=fd)
-        print('var main_categories =', categories, file=fd)
+        print('var data_names =', names, file=fd)
+        print('var data_thumbs =', thumbs, file=fd)
+        print('var data_similarities =', similarity, file=fd)
+        print('var data_people =', people, file=fd)
+        print('var data_credit =', credit, file=fd)
+        print('var data_categories =', categories, file=fd)
 
-    css = VersionedResource('style.css', web_root)
-    game = VersionedResource('game.js', web_root)
-    data = VersionedResource('/tmp/data.js', web_root)
+    css = VersionedResource('style.css', optimize.web_root)
+    game = VersionedResource('game.js', optimize.web_root)
+    data = VersionedResource('/tmp/data.js', optimize.web_root)
 
-    for vr in [css, game, data]:
-        vr.cleanup()
-        vr.write()
+    for source in [css, game, data]:
+        source.cleanup()
+        source.write()
 
-    with open(os.path.join(web_root, 'index.html'), 'w+') as fd:
-        print(_html_builder(css.name, game.name, data.name), file=fd, end='')
-
-
-# PRIVATE
+    with open(os.path.join(optimize.web_root, 'index.html'), 'w+') as fd:
+        print(html_builder(css.name, game.name, data.name), file=fd, end='')
 
 
-def _distance(a: str, b: str) -> float:
-    tree = load_taxonomy()
+def distance(a: str, b: str) -> float:
+    tree = taxonomy.load_taxonomy()
 
     at = tree[a].split(' ')
     bt = tree[b].split(' ')
@@ -108,7 +82,7 @@ def _distance(a: str, b: str) -> float:
     return match / total
 
 
-def _similarity_table(names: List[str]) -> SimiliarityTable:
+def similarity_table(names: List[str]) -> SimiliarityTable:
     """how alike is every name pair"""
     similarity: SimiliarityTable = [[] for _ in names]
 
@@ -122,14 +96,33 @@ def _similarity_table(names: List[str]) -> SimiliarityTable:
                 # should already be done
                 continue
 
-            d = _distance(name, other)
+            d = distance(name, other)
             d = int(d * 100)
             similarity[i].append(d)
 
     return similarity
 
 
-def _html_builder(css: str, game: str, data: str) -> str:
+def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
+    examples = []
+    for name in sorted(tree):
+        examples.append(tree[name][0])
+
+    indicies: Dict[str, List[int]] = {
+        'Washington': [],
+        'Fish': [],
+        'Inverts': [],
+        'Algae': [],
+    }
+
+    for i, img in enumerate(examples):
+        indicies['Washington'].append(i)
+        indicies[img.category].append(i)
+
+    return indicies
+
+
+def html_builder(css: str, game: str, data: str) -> str:
     """Insert dynamic content into the HTML template"""
     desc = 'Test your Reef Check ID expertise with professionally labeled images.'
     return f"""
@@ -201,7 +194,7 @@ def _html_builder(css: str, game: str, data: str) -> str:
 
 
 def main() -> None:
-    record_all_dimensions(load_images())
+    quality.record_all_dimensions(collection.load_images())
 
     limit = 20
     tree = build_image_tree()
@@ -215,7 +208,7 @@ def main() -> None:
     writer(tree)
 
     images = [img for img_list in tree.values() for img in img_list]
-    create_webp(images)
+    optimize.create_webp(images)
     metrics.summary()
 
 

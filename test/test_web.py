@@ -12,7 +12,7 @@ class TestTableBuilder(unittest.TestCase):
         tree = species.build_image_tree()
         tree = {k: tree[k] for k in list(tree)[:3]}
 
-        ns, ts, ss, ps, cs = web.table_builder(tree)
+        ns, ts, ps, cs = web.table_builder(tree)
         self.assertEqual(ns, ['Acid Weed', 'Broad Ribbed Kelp', 'Bull Kelp'])
 
     def test_category_indicies(self) -> None:
@@ -20,10 +20,14 @@ class TestTableBuilder(unittest.TestCase):
         urchin = make_image('Inverts', 'Urchin', 'Jane Doe')
         winged = make_image('Algae', 'Winged Kelp', 'John Doe')
         anemone = make_image('Inverts', 'Anemone', 'Jane Doe')
+        tree = {
+            'a': [salmon],
+            'b': [urchin],
+            'c': [winged],
+            'd': [anemone],
+        }
 
-        images = [salmon, urchin, winged, anemone]
-
-        indicies = web.category_indices(images)
+        indicies = web.category_indices(tree)
         expected = {
             'Washington': [0, 1, 2, 3],
             'Fish': [0],
