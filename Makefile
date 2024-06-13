@@ -6,20 +6,20 @@ serve:
 	@serve ~/working/object-publish/detective
 
 clean:
-	rm ~/working/object-publish/detective/large/*
-	rm ~/working/object-publish/detective/small/*
+	rm ~/working/object-publish/detective/{large,small}/*
 
 sync:
 	@rsync \
 		--human-readable \
 		--exclude .DS_Store \
-		--archive --delete \
+		--archive \
+		--delete \
 		--info=progress2 \
 		~/working/object-publish/detective/ \
 		aspen:/mnt/ssd/hosts/web/detective/
 
 
-.PHONY: lint shellcheck mypy ruff format
+.PHONY: lint mypy ruff format
 lint: mypy ruff
 
 mypy:
@@ -33,8 +33,6 @@ format:
 	ruff format *.py
 
 
-.PHONY: test unittest serve
-test: unittest
-
-unittest:
+.PHONY: test
+test:
 	python3 -m unittest
