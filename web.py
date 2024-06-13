@@ -4,6 +4,7 @@ import os
 from typing import List, Tuple
 
 from collection import load_images
+from metrics import metrics
 from optimize import create_webp, web_root
 from quality import record_all_dimensions
 from species import ImageTree, build_image_tree
@@ -177,12 +178,16 @@ def main() -> None:
 
     limit = 20
     tree = build_image_tree()
+    metrics.counter('images available', sum(len(v) for v in tree.values()))
+
     tree = {k: tree[k][:limit] for k in list(tree)}
+    metrics.counter('images used', sum(len(v) for v in tree.values()))
 
     writer(tree)
 
     images = [img for img_list in tree.values() for img in img_list]
     create_webp(images)
+    metrics.summary()
 
 
 if __name__ == '__main__':

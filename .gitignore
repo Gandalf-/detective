@@ -9,3 +9,4 @@ profile.*
 *.sync-conflict*
 data.js
 data/quality.csv
+data/metrics.json

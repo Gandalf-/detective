@@ -7,6 +7,7 @@ from typing import Dict, List
 
 from collection import load_images
 from image import Image
+from metrics import metrics
 
 
 class Species:
@@ -40,6 +41,8 @@ def load_species() -> List[Species]:
                 continue
 
             new = Species(common, scientific, code)
+
+            metrics.counter('species parsed')
             species.append(new)
 
     return species
@@ -65,7 +68,8 @@ def build_image_tree() -> ImageTree:
     found = set(tree.keys())
     missing = all_common - found
 
-    # XXX Come back to this later
-    assert len(missing) == 6, missing
+    metrics.counter('species non-reef', len(non_reef))
+    for m in missing:
+        metrics.record('missing', m)
 
     return tree

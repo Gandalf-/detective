@@ -5,6 +5,7 @@ from functools import lru_cache
 from typing import List
 
 from image import Image
+from metrics import metrics
 from parse import parse_name
 from quality import low_quality
 
@@ -75,8 +76,10 @@ def load_root(root: str) -> List[Image]:
 
         image = Image(path, label, credit)
         if low_quality(image):
+            metrics.counter('images low quality')
             continue
 
+        metrics.counter('images parsed')
         images.append(image)
 
     return images

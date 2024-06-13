@@ -14,7 +14,7 @@ from image import Image
 def low_quality(image: Image) -> bool:
     known = load_dimensions()
     width, height = known[image.id]
-    return width <= 600
+    return width <= 700
 
 
 def record_all_dimensions(images: List[Image]) -> None:
