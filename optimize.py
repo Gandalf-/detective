@@ -53,6 +53,8 @@ def create_thumbnail(image: Image) -> None:
         [
             '-quality',
             '70%',
+            '-resize',
+            '320000@',
             image.path,
             output,
         ]

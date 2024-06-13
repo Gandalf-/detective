@@ -75,7 +75,7 @@ def load_root(root: str) -> List[Image]:
             continue
 
         image = Image(path, label, credit)
-        if quality.acceptable(image):
+        if quality.unacceptable(image):
             metrics.counter('images low quality')
             continue
 

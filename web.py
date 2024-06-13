@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
 import os
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 from collection import load_images
+from image import Image
 from metrics import metrics
 from optimize import create_webp, web_root
 from quality import record_all_dimensions
@@ -38,20 +39,43 @@ def table_builder(
     return names, thumbs, similarity, people, credit
 
 
-def writer(tree: ImageTree) -> None:
-    ns, ts, ss, ps, cs = table_builder(tree)
+def category_indices(examples: List[Image]) -> Dict[str, List[int]]:
+    indicies: Dict[str, List[int]] = {
+        'Washington': [],
+        'Fish': [],
+        'Inverts': [],
+        'Algae': [],
+    }
 
-    # This saves 100KB of data, ~20% of the total
-    ts = str(ts).replace(' ', '')
-    ss = str(ss).replace(' ', '')
-    cs = str(cs).replace(' ', '')
+    for i, img in enumerate(examples):
+        indicies['Washington'].append(i)
+        indicies[img.category].append(i)
+
+    return indicies
+
+
+def writer(tree: ImageTree) -> None:
+    names, thumbs, similarity, people, credit = table_builder(tree)
+
+    # This saves ~20% of the total
+    thumbs = str(thumbs).replace(' ', '')
+    similarity = str(similarity).replace(' ', '')
+    credit = str(credit).replace(' ', '')
+
+    examples = []
+    for name in sorted(tree):
+        examples.append(tree[name][0])
+
+    categories = category_indices(examples)
+    categories = str(categories).replace(' ', '')
 
     with open('/tmp/data.js', 'w+') as fd:
-        print('var main_names =', ns, file=fd)
-        print('var main_thumbs =', ts, file=fd)
-        print('var main_similarities =', ss, file=fd)
-        print('var main_people =', ps, file=fd)
-        print('var main_credit =', cs, file=fd)
+        print('var main_names =', names, file=fd)
+        print('var main_thumbs =', thumbs, file=fd)
+        print('var main_similarities =', similarity, file=fd)
+        print('var main_people =', people, file=fd)
+        print('var main_credit =', credit, file=fd)
+        print('var main_categories =', categories, file=fd)
 
     css = VersionedResource('style.css', web_root)
     game = VersionedResource('game.js', web_root)
@@ -130,7 +154,10 @@ def _html_builder(css: str, game: str, data: str) -> str:
             </div>
             <div id="control">
                 <select id="game" onchange="choose_game();">
-                    <option value="names">Washington</option>
+                    <option value="Washington">Washington</option>
+                    <option value="Algae">WA Algae</option>
+                    <option value="Fish">WA Fish</option>
+                    <option value="Inverts">WA Inverts</option>
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>

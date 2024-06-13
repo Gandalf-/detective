@@ -12,9 +12,13 @@ class Image:
         self.s_label = label
         self.g_label = self._general_label()
         self.credit = credit
+        if credit == 'Wei Chang':
+            self.credit = 'Shou-Wei Chang'
 
         relative_path = path.replace(image_root, '')
         self.id = hashlib.md5(relative_path.encode()).hexdigest()
+
+        self.category = relative_path.split(os.sep)[0]
 
     def __repr__(self) -> str:
         return f'{self.g_label} - {self.credit}'

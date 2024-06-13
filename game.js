@@ -22,8 +22,8 @@ const g_sample_table = [2, 2, 2, 1, 1];
 function name_game() {
     choose_dataset();
 
-    const correct = choose_correct();
-    console.log(g_names[correct]);
+    const choices = get_choices();
+    const correct = choose_correct(choices);
 
     const difficulty = get_difficulty();
     const lower_bound = g_lower_bound_table[difficulty];
@@ -35,7 +35,6 @@ function name_game() {
     const actual = random(count);
 
     for (i = 0, w = 0; i < count; i++) {
-
         var child = document.createElement('div');
         child.setAttribute('id', 'option' + i);
         byId('options').appendChild(child);
@@ -59,6 +58,7 @@ function choose_dataset() {
     g_similarities = main_similarities;
     g_people = main_people;
     g_credit = main_credit;
+    g_categories = main_categories;
 }
 
 /* HTML modifying utilities */
@@ -139,8 +139,6 @@ function set_correct_image(correct) {
 }
 
 function set_thumbnail(where, what, thumb, person) {
-    thumb = thumb || g_thumbs[what][random(g_thumbs[what].length)];
-
     var img = document.createElement('img');
     img.src = '/small/' + thumb + '.webp';
 
@@ -248,6 +246,11 @@ function add_zoom() {
     options.appendChild(child);
 }
 
+function get_choices() {
+    const game = byId('game').value;
+    return g_categories[game];
+}
+
 function get_difficulty() {
     return parseInt(byId('difficulty').value);
 }
@@ -262,22 +265,10 @@ function set_difficulty(value) {
  * @param {number} difficulty - The difficulty level to match.
  * @returns {number} The index of a creature that matches the difficulty level.
  */
-function choose_correct() {
-    const attempts = 10;
-    let candidate;
-
-    if (typeof variable !== 'undefined') {
-        // In case we have cache mismatches between data.js and game.js.
-        return random(g_names.length);
-    }
-
-    for (let i = 0; i < attempts; i++) {
-        candidate = random(g_names.length);
-
-        console.log(g_names[candidate], 'is too difficult');
-    }
-
-    return candidate;
+function choose_correct(choices) {
+    const choice = choices[random(choices.length)];
+    console.log('choices', choices, choice, g_names[choice]);
+    return choice;
 }
 
 /**
@@ -324,7 +315,7 @@ function find_similar(target, lowerBound, upperBound, required) {
 
         const i = Math.max(candidate, target);
         const j = Math.min(candidate, target);
-        console.log('getting score for', candidate, target, i, j, g_names.length, shuffledIndices.length);
+        // console.log('getting score for', candidate, target, i, j, g_names.length, shuffledIndices.length);
         const score = g_similarities[i][j];
 
         if (score >= lowerBound && score <= upperBound) {

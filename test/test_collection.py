@@ -41,6 +41,7 @@ class TestLoad(unittest.TestCase):
         for img in images:
             self.assertTrue(os.path.exists(img.path))
             self.assertNotEqual(img.credit, '', img)
+            self.assertEqual(img.category, 'Algae')
 
     def test_load_fish(self) -> None:
         fish_root = collection.make_root('Fish')
@@ -50,6 +51,7 @@ class TestLoad(unittest.TestCase):
         for img in images:
             self.assertTrue(os.path.exists(img.path))
             self.assertNotEqual(img.credit, '', img)
+            self.assertEqual(img.category, 'Fish')
 
     def test_load_inverts(self) -> None:
         inverts_root = collection.make_root('Inverts')
@@ -59,6 +61,7 @@ class TestLoad(unittest.TestCase):
         for img in images:
             self.assertTrue(os.path.exists(img.path))
             self.assertNotEqual(img.credit, '', img)
+            self.assertEqual(img.category, 'Inverts')
 
     def test_credits(self) -> None:
         images = collection.load_images()
@@ -109,6 +112,8 @@ class TestLoad(unittest.TestCase):
 
             self.assertEqual(images[0].g_label, expected)
 
-    @unittest.skip('Not implemented')
     def test_hyphen_author(self) -> None:
-        self.fail('Shou-Wei Chang')
+        perch_root = collection.make_root('Fish/Shiner Perch')
+        images = collection.load_root(perch_root)
+        authors = {img.credit for img in images}
+        self.assertIn('Shou-Wei Chang', authors)
