@@ -4,10 +4,10 @@ import os
 from functools import lru_cache
 from typing import List
 
+import parse
+import quality
 from image import Image
 from metrics import metrics
-from parse import parse_name
-from quality import low_quality
 
 image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
 
@@ -69,13 +69,13 @@ def load_root(root: str) -> List[Image]:
             continue
 
         try:
-            label, credit = parse_name(filename)
+            label, credit = parse.parse_name(filename)
         except IndexError:
             print(f'Error parsing {path}')
             continue
 
         image = Image(path, label, credit)
-        if low_quality(image):
+        if quality.acceptable(image):
             metrics.counter('images low quality')
             continue
 

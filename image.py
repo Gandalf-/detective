@@ -25,6 +25,7 @@ class Image:
         label = label.split('(')[0].strip()
 
         conversions = {
+            'Anemones': 'Large Anemone',
             'Pterygophora': 'Woody Kelp',
             'Sargassum horneri': 'Horn Weed',
             'Laminaria setchelii': 'Torn Kelp',

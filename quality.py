@@ -11,10 +11,13 @@ from tqdm import tqdm
 from image import Image
 
 
-def low_quality(image: Image) -> bool:
+def acceptable(image: Image) -> bool:
     known = load_dimensions()
     width, height = known[image.id]
-    return width <= 700
+
+    minimum = 1_500_000
+    maximum = 12_000_000
+    return width * height < minimum or width * height > maximum
 
 
 def record_all_dimensions(images: List[Image]) -> None:

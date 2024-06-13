@@ -178,10 +178,12 @@ def main() -> None:
 
     limit = 20
     tree = build_image_tree()
-    metrics.counter('images available', sum(len(v) for v in tree.values()))
+    metrics.counter('images matched', sum(len(v) for v in tree.values()))
 
     tree = {k: tree[k][:limit] for k in list(tree)}
     metrics.counter('images used', sum(len(v) for v in tree.values()))
+    metrics.counter('species short', sum(1 for v in tree.values() if len(v) < limit))
+    metrics.counter('species represented', len(tree))
 
     writer(tree)
 

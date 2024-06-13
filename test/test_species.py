@@ -22,13 +22,13 @@ class TestSpecies(unittest.TestCase):
         common_names = {spec.common for spec in species_list}
         self.assertEqual(len(common_names), len(species_list))
 
+        # Treating Green and Pallid Urchins as the same
+        codes = {spec.code for spec in species_list}
+        self.assertEqual(len(codes), len(species_list))
+
         # Young of Year Rockfish, gendered species
         scientific_names = {spec.scientific for spec in species_list}
         self.assertNotEqual(len(scientific_names), len(species_list))
-
-        # Green/Pallid Sea Urchin
-        codes = {spec.code for spec in species_list}
-        self.assertNotEqual(len(codes), len(species_list))
 
     def test_simple(self) -> None:
         perch = get_by_code('PIP')

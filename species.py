@@ -42,7 +42,7 @@ def load_species() -> List[Species]:
 
             new = Species(common, scientific, code)
 
-            metrics.counter('species parsed')
+            metrics.counter('species wanted')
             species.append(new)
 
     return species
@@ -57,18 +57,18 @@ def build_image_tree() -> ImageTree:
 
     species = load_species()
     all_common = {spec.common for spec in species}
-    non_reef = set()
+    other = set()
 
     for img in load_images():
         if img.g_label in all_common:
             tree.setdefault(img.g_label, []).append(img)
         else:
-            non_reef.add(img.g_label)
+            other.add(img.g_label)
 
     found = set(tree.keys())
     missing = all_common - found
 
-    metrics.counter('species non-reef', len(non_reef))
+    metrics.counter('species other', len(other))
     for m in missing:
         metrics.record('missing', m)
 
