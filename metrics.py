@@ -4,8 +4,9 @@ be displayed at the end of gallery.py's execution.
 """
 
 import json
-import pathlib
 from typing import Any
+
+from config import src_root
 
 
 class Metrics:
@@ -61,6 +62,6 @@ class Metrics:
             return {}
 
 
-persist_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/metrics.json'
+persist_path = f'{src_root}/data/metrics.json'
 
 metrics = Metrics()

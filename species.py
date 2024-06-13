@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 import csv
-import pathlib
 from functools import lru_cache
 from typing import Dict, List
 
 from collection import load_images
+from config import src_root
 from image import Image
 from metrics import metrics
 
@@ -30,7 +30,7 @@ class Species:
 @lru_cache(None)
 def load_species() -> List[Species]:
     species = []
-    csv_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/species.csv'
+    csv_path = f'{src_root}/data/species.csv'
 
     with open(csv_path) as fd:
         reader = csv.reader(fd)

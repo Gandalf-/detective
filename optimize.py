@@ -7,9 +7,8 @@ from typing import List
 
 from tqdm import tqdm
 
+from config import web_root
 from image import Image
-
-web_root = os.path.expanduser('~/working/object-publish/detective')
 
 
 def create_webp(images: List[Image]) -> None:

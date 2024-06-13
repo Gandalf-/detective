@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import pathlib
 import subprocess
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from functools import lru_cache
@@ -8,6 +7,7 @@ from typing import Dict, List, Tuple
 
 from tqdm import tqdm
 
+from config import src_root
 from image import Image
 
 
@@ -50,7 +50,7 @@ def load_dimensions() -> Dict[str, Tuple[int, int]]:
 
 # PRIVATE
 
-csv_path = str(pathlib.Path(__file__).parent.absolute()) + '/data/quality.csv'
+csv_path = f'{src_root}/data/quality.csv'
 
 
 def dimensions(image: Image) -> str:
