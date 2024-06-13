@@ -146,7 +146,7 @@ def html_builder(css: str, game: str, data: str) -> str:
                 <p class="scientific"></p>
             </div>
             <div id="control">
-                <select id="game" onchange="choose_game();">
+                <select id="game" onchange="choose_game(0);">
                     <option value="Washington">Washington</option>
                     <option value="Algae">WA Algae</option>
                     <option value="Fish">WA Fish</option>
@@ -156,7 +156,7 @@ def html_builder(css: str, game: str, data: str) -> str:
                     <h3 id="score"></h3>
                     <h3 id="points"></h3>
                 </div>
-                <select id="difficulty" onchange="choose_game();">
+                <select id="difficulty" onchange="choose_game(0);">
                     <option value=0>Very Easy</option>
                     <option value=1>Easy</option>
                     <option value=2>Moderate</option>

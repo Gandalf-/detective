@@ -31,25 +31,41 @@ function name_game() {
     const count = g_count_table[difficulty];
     const options = find_similar(correct, lower_bound, upper_bound, count - 1);
 
-    set_correct_name(correct);
-    const actual = random(count);
+    set_correct_name(correct, null, function() {
+        reset_options();
 
-    for (i = 0, w = 0; i < count; i++) {
-        var child = document.createElement('div');
-        child.setAttribute('id', 'option' + i);
-        byId('options').appendChild(child);
+        const actual = random(count);
+        for (i = 0, w = 0; i < count; i++) {
+            var child = document.createElement('div');
+            child.setAttribute('id', 'option' + i);
+            byId('options').appendChild(child);
 
-        if (i == actual) {
-            set_text('option' + i, correct, 'success();');
+            if (i == actual) {
+                set_text('option' + i, correct, true);
+            } else {
+                set_text('option' + i, options[w], false);
+                w++;
+            }
+        }
+
+        add_zoom();
+        add_skip();
+        add_new_correct_thumbnail(correct);
+    });
+}
+
+function blank_options() {
+    for (i = 0; i < 8; i++) {
+        var option = byId('option' + i);
+        if (option == null) {
+            continue;
+        }
+        if (option.hasAttribute('correct')) {
+            option.style.border = "1px solid green";
         } else {
-            set_text('option' + i, options[w], 'failure(this);');
-            w++;
+            option.innerHTML = '<h4>&nbsp;</h4>';
         }
     }
-
-    add_zoom();
-    add_skip();
-    add_new_correct_thumbnail(correct);
 }
 
 function choose_dataset() {
@@ -63,25 +79,40 @@ function choose_dataset() {
 
 /* HTML modifying utilities */
 
-function choose_game() {
-    g_made_mistake = false;
-    update_score();
-    reset_options();
-    name_game();
+g_delaying = false;
+
+function choose_game(delay) {
+    if (g_delaying) {
+        return;
+    }
+
+    g_delaying = true;
+    blank_options();
+    console.log("waiting", delay, "ms");
+
+    setTimeout(function() {
+        g_made_mistake = false;
+        update_score();
+        name_game();
+        g_delaying = false;
+    }, delay);
 }
 
-function set_text(where, what, onclick) {
+function set_text(where, what, correct) {
     var option = byId(where);
     var name = g_names[what];
 
-    if (onclick) {
-        option.setAttribute('onclick', onclick);
+    if (correct) {
+        option.setAttribute('correct', '');
     }
+
+    option.setAttribute('onclick', 'selection(this)');
     option.setAttribute('class', 'top switch');
 
     var child = document.createElement('h4');
     child.innerHTML = name;
 
+    option.innerHTML = '';
     option.appendChild(child);
 }
 
@@ -97,14 +128,25 @@ function update_score() {
     byId('points').innerHTML = `Points: ${g_points.toLocaleString()}`;
 }
 
-function success() {
+function selection(where) {
+    if (where.hasAttribute('correct')) {
+        success(where);
+    } else {
+        failure(where);
+    }
+}
+
+function success(where) {
+    where.style.border = "1px solid green";
     g_correct++;
+
     if (!g_made_mistake) {
         const points = Math.pow(10, 1 + get_difficulty());
         console.log(`adding ${points} points for ${get_difficulty()}`)
         g_points += points;
     }
-    choose_game();
+
+    choose_game(1000);
 }
 
 /**
@@ -128,17 +170,7 @@ function reset_options() {
  * Hide the correct image but update the task for the player
  * @param {number} correct - The index of the correct creature.
  */
-function set_correct_image(correct) {
-    var outer = byId('correct_outer');
-    outer.setAttribute('class', '');
-    outer.innerHTML = '';
-
-    var child = document.createElement('h2');
-    child.innerHTML = 'Select the ' + g_names[correct];
-    outer.appendChild(child);
-}
-
-function set_thumbnail(where, what, thumb, person) {
+function set_thumbnail(where, what, thumb, person, callback) {
     var img = document.createElement('img');
     img.src = '/small/' + thumb + '.webp';
 
@@ -147,10 +179,14 @@ function set_thumbnail(where, what, thumb, person) {
     credit.innerHTML = `Photographer: ${person}`;
 
     img.onload = function() {
-      const target = document.getElementById(where);
-      target.innerHTML = '';
-      target.appendChild(img);
-      target.appendChild(credit);
+        const target = document.getElementById(where);
+        target.innerHTML = '';
+        target.appendChild(img);
+        target.appendChild(credit);
+
+        if (callback) {
+            callback();
+        }
     };
 }
 
@@ -160,7 +196,7 @@ function set_thumbnail(where, what, thumb, person) {
  * @param {number} correct - The index of the correct creature.
  * @param {string} previous - The last thumbnail hash, optional
  */
-function set_correct_name(correct, previous) {
+function set_correct_name(correct, previous, callback) {
     const images = shuffle([...g_thumbs[correct]]);
 
     var i = 0;
@@ -172,7 +208,7 @@ function set_correct_name(correct, previous) {
     const who = g_credit[correct][i];
     console.log('credit', g_people[who]);
 
-    set_thumbnail(`correct`, correct, images[i], g_people[who]);
+    set_thumbnail(`correct`, correct, images[i], g_people[who], callback);
 }
 
 /*        _   _ _ _ _
@@ -191,7 +227,9 @@ function add_skip() {
 
     const child = document.createElement('div');
     child.classList.add('top', 'switch', 'skip');
-    child.addEventListener('click', choose_game);
+    child.addEventListener('click', function() {
+        choose_game(1000);
+    });
     child.innerHTML = '<h4 class="skip">Skip</h4>';
 
     options.appendChild(child);
@@ -211,7 +249,7 @@ function add_new_correct_thumbnail(correct) {
     function new_correct_thumbnail() {
         const current = byId('correct').firstChild.src.split('/').pop().split('.')[0];
         console.log('Setting a new correct thumbnail, previous was', current);
-        set_correct_name(correct, current);
+        set_correct_name(correct, current, null);
     }
 
     const child = document.createElement('div');
@@ -315,7 +353,6 @@ function find_similar(target, lowerBound, upperBound, required) {
 
         const i = Math.max(candidate, target);
         const j = Math.min(candidate, target);
-        // console.log('getting score for', candidate, target, i, j, g_names.length, shuffledIndices.length);
         const score = g_similarities[i][j];
 
         if (score >= lowerBound && score <= upperBound) {
