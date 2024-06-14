@@ -6,13 +6,13 @@ be displayed at the end of gallery.py's execution.
 import json
 from typing import Any
 
-from config import src_root
+from util import config
 
 
 class Metrics:
     def __init__(self) -> None:
         self._data: dict[str, Any] = {}
-        self._path = f'{src_root}/data/metrics.json'
+        self._path = f'{config.src_root}/data/metrics.json'
 
     def record(self, key: str, value: Any) -> None:
         self._data.setdefault(key, set())

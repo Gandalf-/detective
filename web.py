@@ -4,14 +4,14 @@ import os
 from typing import Dict, List, Tuple
 
 import collection
-import config
 import optimize
 import quality
 import species
 import taxonomy
-from metrics import metrics
 from species import ImageTree
-from version import VersionedResource
+from util import config
+from util.metrics import metrics
+from util.version import VersionedResource
 
 ThumbsTable = List[List[str]]
 CreditTable = List[List[int]]

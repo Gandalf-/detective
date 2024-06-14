@@ -7,8 +7,8 @@ from typing import List
 
 from tqdm import tqdm
 
-import config
 from image import Image
+from util import config
 
 
 def create_webp(images: List[Image]) -> None:

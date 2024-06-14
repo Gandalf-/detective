@@ -5,12 +5,12 @@ from typing import Any, Dict, List, Optional
 
 import yaml
 
-from config import src_root
+from util import config
 
 
 @lru_cache(None)
 def load_taxonomy() -> Dict[str, str]:
-    yml_path = f'{src_root}/data/taxonomy.yml'
+    yml_path = f'{config.src_root}/data/taxonomy.yml'
 
     with open(yml_path) as fd:
         data = yaml.safe_load(fd)

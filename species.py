@@ -5,9 +5,9 @@ from functools import lru_cache
 from typing import Dict, List
 
 import collection
-import config
 from image import Image
-from metrics import metrics
+from util import config
+from util.metrics import metrics
 
 
 class Species:

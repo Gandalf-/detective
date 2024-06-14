@@ -3,7 +3,7 @@
 import hashlib
 import os
 
-import config
+from util import config
 
 
 class Image:

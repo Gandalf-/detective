@@ -4,11 +4,11 @@ import os
 from functools import lru_cache
 from typing import List
 
-import config
 import parse
 import quality
 from image import Image
-from metrics import metrics
+from util import config
+from util.metrics import metrics
 
 
 def load_images() -> List[Image]:

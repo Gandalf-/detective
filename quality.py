@@ -7,8 +7,8 @@ from typing import Dict, List, Tuple
 
 from tqdm import tqdm
 
-import config
 from image import Image
+from util import config
 
 
 def unacceptable(image: Image) -> bool:
