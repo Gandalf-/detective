@@ -49,12 +49,12 @@ def writer(tree: ImageTree) -> None:
     categories = str(categories).replace(' ', '')
 
     with open('/tmp/data.js', 'w+') as fd:
-        print('var data_names =', names, file=fd)
-        print('var data_thumbs =', thumbs, file=fd)
-        print('var data_similarities =', similarity, file=fd)
-        print('var data_people =', people, file=fd)
-        print('var data_credit =', credit, file=fd)
-        print('var data_categories =', categories, file=fd)
+        print('var g_names =', names, file=fd)
+        print('var g_thumbs =', thumbs, file=fd)
+        print('var g_similarities =', similarity, file=fd)
+        print('var g_people =', people, file=fd)
+        print('var g_credit =', credit, file=fd)
+        print('var g_categories =', categories, file=fd)
 
     css = VersionedResource('style.css', config.web_root)
     game = VersionedResource('game.js', config.web_root)
@@ -180,10 +180,6 @@ def html_builder(css: str, game: str, data: str) -> str:
                 <div class="choice" id="option5"> </div>
                 <div class="choice" id="option6"> </div>
                 <div class="choice" id="option7"> </div>
-
-                <div class="top switch skip" onclick="choose_game();">
-                    <h4>Skip</h4>
-                </div>
             </div>
         </div>
 

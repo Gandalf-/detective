@@ -2,36 +2,47 @@
 var g_correct = 0;
 var g_incorrect = 0;
 var g_points = 0;
-var g_made_mistake = false;
+var g_mistakes = 0;
+var g_delaying = false;
 
-var g_names = [];
-var g_thumbs = [];
-var g_similarities = [];
-
+/* constants */
 const g_lower_bound_table = [0, 15, 25, 40, 80];
 const g_upper_bound_table = [10, 25, 35, 40, 100];
 const g_count_table = [2, 2, 4, 6, 8];
 const g_sample_table = [2, 2, 2, 1, 1];
 
-/* game logic */
+/**
+ * Main entry point
+ */
+function choose_game(delay = 0) {
+    if (g_delaying) {
+        return;
+    }
+    g_delaying = true;
 
-/*
- * the player is given a single image and must choose it's name from the
- * options below
+    blank_options();
+    setTimeout(function() {
+        g_mistakes = 0;
+        update_score();
+        name_game();
+        g_delaying = false;
+    }, delay);
+}
+
+/**
+ * The player is given a single image and must choose it's name from the text options
  */
 function name_game() {
-    choose_dataset();
-
-    const choices = get_choices();
-    const correct = choose_correct(choices);
+    const correct = choose_correct(get_choices());
 
     const difficulty = get_difficulty();
     const lower_bound = g_lower_bound_table[difficulty];
     const upper_bound = g_upper_bound_table[difficulty];
     const count = g_count_table[difficulty];
-    const options = find_similar(correct, lower_bound, upper_bound, count - 1);
 
-    set_correct_name(correct, null, function() {
+    const incorrect = find_similar(correct, lower_bound, upper_bound, count - 1);
+
+    set_correct_thumbnail(correct, null, function() {
         clear_options();
 
         const actual = random(count);
@@ -41,7 +52,7 @@ function name_game() {
             if (i == actual) {
                 build_option(option, correct, true);
             } else {
-                build_option(option, options[w], false);
+                build_option(option, incorrect[w], false);
                 w++;
             }
 
@@ -54,50 +65,13 @@ function name_game() {
     });
 }
 
-function blank_options() {
-    for (i = 0; i < 8; i++) {
-        var option = byId('option' + i);
-        if (option == null) {
-            continue;
-        }
-        if (option.hasAttribute('correct')) {
-            option.style.border = "1px solid green";
-        } else {
-            option.innerHTML = '<h4>&nbsp;</h4>';
-        }
-    }
-}
-
-function choose_dataset() {
-    g_names = data_names;
-    g_thumbs = data_thumbs;
-    g_similarities = data_similarities;
-    g_people = data_people;
-    g_credit = data_credit;
-    g_categories = data_categories;
-}
-
-/* HTML modifying utilities */
-
-g_delaying = false;
-
-function choose_game(delay = 0) {
-    if (g_delaying) {
-        return;
-    }
-
-    g_delaying = true;
-    blank_options();
-    console.log("waiting", delay, "ms");
-
-    setTimeout(function() {
-        g_made_mistake = false;
-        update_score();
-        name_game();
-        g_delaying = false;
-    }, delay);
-}
-
+/**
+ * Build an option element for the name game.
+ *
+ * @param {HTMLElement} option - The element to build.
+ * @param {number} name_index - The index of the creature's name.
+ * @param {boolean} correct - Whether this is the correct option.
+ */
 function build_option(option, name_index, correct) {
     option.setAttribute('class', 'top switch');
     option.setAttribute('id', 'option' + i);
@@ -124,34 +98,32 @@ function update_score() {
         score = Math.floor(g_correct / total * 100);
     }
 
-    byId('score').innerHTML = score + '% (' + g_correct + '/' + total + ')';
+    byId('score').innerHTML = `${score}% (${g_correct}/${total})`;
     byId('points').innerHTML = `Points: ${g_points.toLocaleString()}`;
 }
 
 function success(where) {
     where.style.border = "1px solid green";
-    g_correct++;
 
-    if (!g_made_mistake) {
-        const points = Math.pow(10, 1 + get_difficulty());
-        console.log(`adding ${points} points for ${get_difficulty()}`)
-        g_points += points;
+    if (g_mistakes == 0) {
+        g_correct++;
+    } else {
+        g_incorrect++;
     }
+
+    let points = Math.pow(10, 1 + get_difficulty());
+    for (let i = 0; i < g_mistakes; i++) {
+        points = Math.floor(points / 2);
+    }
+    console.log(`adding ${points} points for ${get_difficulty()}`)
+    g_points += points;
 
     choose_game(1000);
 }
 
-/**
- * Called when the player makes a mistake.
- * @param {HTMLElement} where - The element that was clicked.
- */
 function failure(where) {
     where.style.border = "1px solid red";
-    if (!g_made_mistake) {
-        g_incorrect++;
-        update_score();
-    }
-    g_made_mistake = true;
+    g_mistakes++;
 }
 
 function clear_options() {
@@ -159,10 +131,29 @@ function clear_options() {
 }
 
 /**
- * Hide the correct image but update the task for the player
- * @param {number} correct - The index of the correct creature.
+ * Blank out the options and highlight the correct one.
  */
-function set_thumbnail(target, what, thumb, person, callback) {
+function blank_options() {
+    const options = document.getElementById('options').children;
+
+    for (let option of options) {
+        if (option.hasAttribute('correct')) {
+            option.style.border = "1px solid green";
+        } else {
+            option.innerHTML = '<h4>&nbsp;</h4>';
+        }
+    }
+}
+
+/**
+ * Set the thumbnail and credit for a target element.
+ *
+ * @param {HTMLElement} target - The element to set the thumbnail in.
+ * @param {string} thumb - The thumbnail hash.
+ * @param {string} person - The photographer's name.
+ * @param {function} callback - Function to call after the thumbnail is loaded, optional.
+ */
+function set_thumbnail(target, thumb, person, callback) {
     var img = document.createElement('img');
     img.src = '/small/' + thumb + '.webp';
 
@@ -185,22 +176,23 @@ function set_thumbnail(target, what, thumb, person, callback) {
  * Set the correct creature name and thumbnails on the game board.
  *
  * @param {number} correct - The index of the correct creature.
- * @param {string} previous - The last thumbnail hash, optional
+ * @param {string} previous - The last thumbnail hash, optional.
+ * @param {function} callback - Function to call after the thumbnail is loaded, optional
  */
-function set_correct_name(correct, previous, callback) {
+function set_correct_thumbnail(correct, previous, callback) {
     const images = shuffle([...g_thumbs[correct]]);
-
     var i = 0;
     while (i < images.length && images[i] === previous) {
         i++;
     }
-    console.log('chose', images[i], 'as the correct image');
 
+    const image = images[i];
     const person_index = g_credit[correct][i];
-    console.log('credit', g_people[person_index]);
+    const credit = g_people[person_index];
+    console.log('chose', image, credit, 'as the correct image');
 
     const target = document.getElementById('correct');
-    set_thumbnail(target, correct, images[i], g_people[person_index], callback);
+    set_thumbnail(target, image, credit, callback);
 }
 
 /*        _   _ _ _ _
@@ -215,16 +207,12 @@ function set_correct_name(correct, previous, callback) {
  * Add a "Skip" button to the options section.
  */
 function add_skip() {
-    const options = byId('options');
+    const skip = document.createElement('div');
+    skip.classList.add('top', 'switch', 'skip');
+    skip.addEventListener('click', () => { choose_game(1000); });
+    skip.innerHTML = '<h4 class="skip">Skip</h4>';
 
-    const child = document.createElement('div');
-    child.classList.add('top', 'switch', 'skip');
-    child.addEventListener('click', function() {
-        choose_game(1000);
-    });
-    child.innerHTML = '<h4 class="skip">Skip</h4>';
-
-    options.appendChild(child);
+    byId('options').appendChild(skip);
 }
 
 /**
@@ -236,12 +224,10 @@ function add_new_correct_thumbnail(correct) {
         return;
     }
 
-    const options = byId('options');
-
     function new_correct_thumbnail() {
         const current = byId('correct').firstChild.src.split('/').pop().split('.')[0];
         console.log('Setting a new correct thumbnail, previous was', current);
-        set_correct_name(correct, current, null);
+        set_correct_thumbnail(correct, current, null);
     }
 
     const child = document.createElement('div');
@@ -249,7 +235,7 @@ function add_new_correct_thumbnail(correct) {
     child.addEventListener('click', new_correct_thumbnail);
     child.innerHTML = '<h4 class="skip">New Example</h4>';
 
-    options.appendChild(child);
+    byId('options').appendChild(child);
 }
 
 /**
@@ -257,9 +243,7 @@ function add_new_correct_thumbnail(correct) {
  * This replaces '/small/' with '/large/' in the image URL.
  */
 function add_zoom() {
-    const options = byId('options');
-
-    function zoom() {
+    function enhance() {
         const current = byId('correct').firstChild.src;
         var img = byId('correct').firstChild;
 
@@ -268,12 +252,12 @@ function add_zoom() {
         img.style.height = 'auto';
     }
 
-    const child = document.createElement('div');
-    child.classList.add('top', 'switch', 'skip');
-    child.addEventListener('click', zoom);
-    child.innerHTML = '<h4 class="skip">Zoom</h4>';
+    const zoom = document.createElement('div');
+    zoom.classList.add('top', 'switch', 'skip');
+    zoom.addEventListener('click', enhance);
+    zoom.innerHTML = '<h4 class="skip">Zoom</h4>';
 
-    options.appendChild(child);
+    byId('options').appendChild(zoom);
 }
 
 function get_choices() {
@@ -285,20 +269,8 @@ function get_difficulty() {
     return parseInt(byId('difficulty').value);
 }
 
-function set_difficulty(value) {
-    byId('difficulty').value = value;
-}
-
-/**
- * Choose a creature index that matches the given difficulty level.
- *
- * @param {number} difficulty - The difficulty level to match.
- * @returns {number} The index of a creature that matches the difficulty level.
- */
 function choose_correct(choices) {
-    const choice = choices[random(choices.length)];
-    console.log('choices', choices, choice, g_names[choice]);
-    return choice;
+    return choices[random(choices.length)];
 }
 
 /**
@@ -320,21 +292,20 @@ function choose_correct(choices) {
 function find_similar(target, lowerBound, upperBound, required) {
     const found = [];
     var shuffledIndices = shuffle([...Array(g_names.length).keys()]);
-
-    console.log("Search limits", lowerBound, upperBound, g_names[target]);
+    console.log("search limits", lowerBound, upperBound, g_names[target]);
 
     while (found.length < required) {
         if (shuffledIndices.length === 0) {
             if (lowerBound <= 0 && upperBound >= 100) {
                 console.error(
-                    "Couldn't satisfy the requirement:", target, lowerBound, required);
+                    "couldn't satisfy the requirement:", target, lowerBound, required);
                 break;
             }
 
             // We've looped through, relax the constraints.
             lowerBound = Math.max(0, lowerBound - 5);
             upperBound = Math.min(100, upperBound + 5);
-            console.log("New limits", lowerBound, upperBound);
+            console.log("new limits", lowerBound, upperBound);
             shuffledIndices = shuffle([...Array(g_names.length).keys()]);
         }
 
@@ -351,10 +322,6 @@ function find_similar(target, lowerBound, upperBound, required) {
             found.push(candidate);
         }
     }
-
-    found.forEach((creatureIndex, i) => {
-        console.log(i, creatureIndex, g_names[creatureIndex]);
-    });
 
     return found;
 }
