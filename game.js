@@ -32,20 +32,20 @@ function name_game() {
     const options = find_similar(correct, lower_bound, upper_bound, count - 1);
 
     set_correct_name(correct, null, function() {
-        reset_options();
+        clear_options();
 
         const actual = random(count);
         for (i = 0, w = 0; i < count; i++) {
-            var child = document.createElement('div');
-            child.setAttribute('id', 'option' + i);
-            byId('options').appendChild(child);
+            var option = document.createElement('div');
 
             if (i == actual) {
-                set_text('option' + i, correct, true);
+                build_option(option, correct, true);
             } else {
-                set_text('option' + i, options[w], false);
+                build_option(option, options[w], false);
                 w++;
             }
+
+            byId('options').appendChild(option);
         }
 
         add_zoom();
@@ -81,7 +81,7 @@ function choose_dataset() {
 
 g_delaying = false;
 
-function choose_game(delay) {
+function choose_game(delay = 0) {
     if (g_delaying) {
         return;
     }
@@ -98,22 +98,22 @@ function choose_game(delay) {
     }, delay);
 }
 
-function set_text(where, what, correct) {
-    var option = byId(where);
-    var name = g_names[what];
+function build_option(option, name_index, correct) {
+    option.setAttribute('class', 'top switch');
+    option.setAttribute('id', 'option' + i);
 
     if (correct) {
         option.setAttribute('correct', '');
+        option.addEventListener('click', () => { success(option); });
+    } else {
+        option.addEventListener('click', () => { failure(option); });
     }
 
-    option.setAttribute('onclick', 'selection(this)');
-    option.setAttribute('class', 'top switch');
-
-    var child = document.createElement('h4');
-    child.innerHTML = name;
+    var text = document.createElement('h4');
+    text.innerHTML = g_names[name_index];
 
     option.innerHTML = '';
-    option.appendChild(child);
+    option.appendChild(text);
 }
 
 function update_score() {
@@ -126,14 +126,6 @@ function update_score() {
 
     byId('score').innerHTML = score + '% (' + g_correct + '/' + total + ')';
     byId('points').innerHTML = `Points: ${g_points.toLocaleString()}`;
-}
-
-function selection(where) {
-    if (where.hasAttribute('correct')) {
-        success(where);
-    } else {
-        failure(where);
-    }
 }
 
 function success(where) {
@@ -162,7 +154,7 @@ function failure(where) {
     g_made_mistake = true;
 }
 
-function reset_options() {
+function clear_options() {
     byId('options').innerHTML = '';
 }
 
@@ -170,7 +162,7 @@ function reset_options() {
  * Hide the correct image but update the task for the player
  * @param {number} correct - The index of the correct creature.
  */
-function set_thumbnail(where, what, thumb, person, callback) {
+function set_thumbnail(target, what, thumb, person, callback) {
     var img = document.createElement('img');
     img.src = '/small/' + thumb + '.webp';
 
@@ -179,7 +171,6 @@ function set_thumbnail(where, what, thumb, person, callback) {
     credit.innerHTML = `Photographer: ${person}`;
 
     img.onload = function() {
-        const target = document.getElementById(where);
         target.innerHTML = '';
         target.appendChild(img);
         target.appendChild(credit);
@@ -205,10 +196,11 @@ function set_correct_name(correct, previous, callback) {
     }
     console.log('chose', images[i], 'as the correct image');
 
-    const who = g_credit[correct][i];
-    console.log('credit', g_people[who]);
+    const person_index = g_credit[correct][i];
+    console.log('credit', g_people[person_index]);
 
-    set_thumbnail(`correct`, correct, images[i], g_people[who], callback);
+    const target = document.getElementById('correct');
+    set_thumbnail(target, correct, images[i], g_people[person_index], callback);
 }
 
 /*        _   _ _ _ _
