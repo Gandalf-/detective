@@ -1,12 +1,14 @@
-.PHONY: local serve clean
+www = ~/working/object-publish/detective
+
+.PHONY: local serve clean sync
 local:
 	python3 web.py
 
 serve:
-	@serve ~/working/object-publish/detective
+	@serve $(www)
 
 clean:
-	rm ~/working/object-publish/detective/{large,small}/*
+	rm $(www)/{large,small}/*
 
 sync:
 	@rsync \
@@ -15,22 +17,23 @@ sync:
 		--archive \
 		--delete \
 		--info=progress2 \
-		~/working/object-publish/detective/ \
+		$(www)/ \
 		aspen:/mnt/ssd/hosts/web/detective/
 
 
-.PHONY: lint mypy ruff format
-lint: mypy ruff
+.PHONY: lint python html format
+lint: python html
 
-mypy:
+python:
 	mypy .
-
-ruff:
 	ruff check --fix .
 
+html:
+	tidy -q -e $(www)/index.html
+
 format:
-	isort --jobs -1 *.py
-	ruff format *.py
+	isort --jobs -1 *.py */*.py
+	ruff format *.py */*.py
 
 
 .PHONY: test
