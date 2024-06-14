@@ -4,11 +4,13 @@ import os
 from typing import Dict, List, Tuple
 
 import collection
+import config
 import optimize
 import quality
+import species
 import taxonomy
 from metrics import metrics
-from species import ImageTree, build_image_tree
+from species import ImageTree
 from version import VersionedResource
 
 ThumbsTable = List[List[str]]
@@ -54,15 +56,15 @@ def writer(tree: ImageTree) -> None:
         print('var data_credit =', credit, file=fd)
         print('var data_categories =', categories, file=fd)
 
-    css = VersionedResource('style.css', optimize.web_root)
-    game = VersionedResource('game.js', optimize.web_root)
-    data = VersionedResource('/tmp/data.js', optimize.web_root)
+    css = VersionedResource('style.css', config.web_root)
+    game = VersionedResource('game.js', config.web_root)
+    data = VersionedResource('/tmp/data.js', config.web_root)
 
     for source in [css, game, data]:
         source.cleanup()
         source.write()
 
-    with open(os.path.join(optimize.web_root, 'index.html'), 'w+') as fd:
+    with open(os.path.join(config.web_root, 'index.html'), 'w+') as fd:
         print(html_builder(css.name, game.name, data.name), file=fd, end='')
 
 
@@ -197,7 +199,7 @@ def main() -> None:
     quality.record_all_dimensions(collection.load_images())
 
     limit = 20
-    tree = build_image_tree()
+    tree = species.build_image_tree()
     metrics.counter('images matched', sum(len(v) for v in tree.values()))
 
     tree = {k: tree[k][:limit] for k in list(tree)}

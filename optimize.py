@@ -7,7 +7,7 @@ from typing import List
 
 from tqdm import tqdm
 
-from config import web_root
+import config
 from image import Image
 
 
@@ -15,8 +15,8 @@ def create_webp(images: List[Image]) -> None:
     with ThreadPoolExecutor() as executor:
         futures = []
         for img in images:
-            futures.append(executor.submit(create_thumbnail, img))
-            futures.append(executor.submit(create_fullsize, img))
+            futures.append(executor.submit(_create_thumbnail, img))
+            futures.append(executor.submit(_create_fullsize, img))
 
         for _ in tqdm(as_completed(futures), total=len(images) * 2, desc='Optimizing'):
             pass
@@ -25,10 +25,10 @@ def create_webp(images: List[Image]) -> None:
     to_remove: List[str] = []
 
     for root in ('small', 'large'):
-        existing = set(os.listdir(os.path.join(web_root, root)))
+        existing = set(os.listdir(os.path.join(config.web_root, root)))
         stale = existing - desired
         for s in stale:
-            to_remove.append(os.path.join(web_root, root, s))
+            to_remove.append(os.path.join(config.web_root, root, s))
 
     if to_remove:
         for s in tqdm(to_remove, total=len(to_remove), desc='Cleaning  '):
@@ -38,17 +38,17 @@ def create_webp(images: List[Image]) -> None:
 # PRIVATE
 
 
-def convert(opts: List[str]) -> None:
+def _convert(opts: List[str]) -> None:
     defaults = ['convert', '-strip', '-auto-orient']
     cmd = defaults + opts
     subprocess.run(cmd)
 
 
-def create_thumbnail(image: Image) -> None:
-    output = os.path.join(web_root, 'small', f'{image.id}.webp')
+def _create_thumbnail(image: Image) -> None:
+    output = os.path.join(config.web_root, 'small', f'{image.id}.webp')
     if os.path.exists(output):
         return
-    convert(
+    _convert(
         [
             '-quality',
             '70%',
@@ -60,11 +60,11 @@ def create_thumbnail(image: Image) -> None:
     )
 
 
-def create_fullsize(image: Image) -> None:
-    output = os.path.join(web_root, 'large', f'{image.id}.webp')
+def _create_fullsize(image: Image) -> None:
+    output = os.path.join(config.web_root, 'large', f'{image.id}.webp')
     if os.path.exists(output):
         return
-    convert(
+    _convert(
         [
             '-quality',
             '35',

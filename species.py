@@ -4,8 +4,8 @@ import csv
 from functools import lru_cache
 from typing import Dict, List
 
-from collection import load_images
-from config import src_root
+import collection
+import config
 from image import Image
 from metrics import metrics
 
@@ -30,7 +30,7 @@ class Species:
 @lru_cache(None)
 def load_species() -> List[Species]:
     species = []
-    csv_path = f'{src_root}/data/species.csv'
+    csv_path = f'{config.src_root}/data/species.csv'
 
     with open(csv_path) as fd:
         reader = csv.reader(fd)
@@ -59,7 +59,7 @@ def build_image_tree() -> ImageTree:
     all_common = {spec.common for spec in species}
     other = set()
 
-    for img in load_images():
+    for img in collection.load_images():
         if img.g_label in all_common:
             tree.setdefault(img.g_label, []).append(img)
         else:

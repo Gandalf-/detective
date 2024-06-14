@@ -4,12 +4,11 @@ import os
 from functools import lru_cache
 from typing import List
 
+import config
 import parse
 import quality
 from image import Image
 from metrics import metrics
-
-image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
 
 
 def load_images() -> List[Image]:
@@ -26,7 +25,7 @@ def load_images() -> List[Image]:
 
 
 def make_root(path: str) -> str:
-    return os.path.join(image_root, path)
+    return os.path.join(config.img_root, path)
 
 
 def load_category(category: str) -> List[Image]:

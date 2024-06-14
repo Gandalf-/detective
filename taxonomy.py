@@ -15,10 +15,13 @@ def load_taxonomy() -> Dict[str, str]:
     with open(yml_path) as fd:
         data = yaml.safe_load(fd)
 
-    return invert_mapping(data)
+    return _invert_mapping(data)
 
 
-def invert_mapping(mapping: Any) -> Dict[str, str]:
+# PRIVATE
+
+
+def _invert_mapping(mapping: Any) -> Dict[str, str]:
     result: Dict[str, str] = {}
 
     def inner(

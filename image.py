@@ -3,7 +3,7 @@
 import hashlib
 import os
 
-image_root = os.path.expanduser('~/Documents/Drive/Indicator Species Photos and Videos/')
+import config
 
 
 class Image:
@@ -15,7 +15,7 @@ class Image:
         if credit == 'Wei Chang':
             self.credit = 'Shou-Wei Chang'
 
-        relative_path = path.replace(image_root, '')
+        relative_path = path.replace(config.img_root, '')
         self.id = hashlib.md5(relative_path.encode()).hexdigest()
 
         self.category = relative_path.split(os.sep)[0]
@@ -24,7 +24,7 @@ class Image:
         return f'{self.g_label} - {self.credit}'
 
     def _general_label(self) -> str:
-        relative_path = os.path.dirname(os.path.relpath(self.path, image_root))
+        relative_path = os.path.dirname(os.path.relpath(self.path, config.img_root))
         label = relative_path.split(os.sep, 1)[1].replace('/', ' ')
         label = label.split('(')[0].strip()
 
