@@ -78,7 +78,7 @@ class TestLoad(unittest.TestCase):
         images = collection.load_category(fish_root)
 
         for img in images:
-            self.assertNotEqual(img.g_label, 'YOY')
+            self.assertNotEqual(img.g_label, 'Unidentified')
 
     def test_sub_category(self) -> None:
         greenling_root = collection.make_root('Fish/Kelp Greenling')
@@ -117,3 +117,13 @@ class TestLoad(unittest.TestCase):
         images = collection.load_root(perch_root)
         authors = {img.credit for img in images}
         self.assertIn('Shou-Wei Chang', authors)
+
+    def test_young_of_year(self) -> None:
+        yoy_root = collection.make_root('Fish/YOY')
+        images = collection.load_root(yoy_root)
+        self.assertNotEqual(images, [])
+
+        for img in images:
+            self.assertTrue(os.path.exists(img.path))
+            self.assertNotEqual(img.credit, '', img)
+            self.assertEqual(img.g_label, 'YOY')

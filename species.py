@@ -62,8 +62,11 @@ def build_image_tree() -> ImageTree:
     for img in collection.load_images():
         if img.g_label in all_common:
             tree.setdefault(img.g_label, []).append(img)
-        else:
-            other.add(img.g_label)
+            continue
+
+        other.add(img.g_label)
+        other_label = f'Non-RCWA {img.category}'.strip('s')
+        tree.setdefault(other_label, []).append(img)
 
     found = set(tree.keys())
     missing = all_common - found

@@ -101,3 +101,7 @@ class TestParseName(unittest.TestCase):
     def test_apostrophe(self) -> None:
         filename = "GiantKelp_TomO'Leary.jpg"
         self.assertEqual(parse.parse_name(filename), ('Giant Kelp', "Tom O'Leary"))
+
+    def test_yoy_vermillion(self) -> None:
+        filename = 'VermilionRockfishYOY-Jackie3.JPG'
+        self.assertEqual(parse.parse_name(filename), ('Vermilion Rockfish YOY', 'Jackie'))

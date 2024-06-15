@@ -37,6 +37,23 @@ class TestTableBuilder(unittest.TestCase):
         self.assertEqual(indicies, expected)
 
 
+class TestDistance(unittest.TestCase):
+    def test_simple(self) -> None:
+        self.assertEqual(distance('Piddock Clam'), 1.0)
+        self.assertEqual(distance('Hairy Triton'), 0.5)
+        self.assertEqual(distance('Large Anemone'), 0.25)
+        self.assertEqual(distance('Acid Weed'), 0.0)
+
+    def test_non_rcwa(self) -> None:
+        self.assertEqual(distance('Non-RCWA Invert'), 1.0)
+        self.assertEqual(distance('Non-RCWA Fish'), 0.0)
+        self.assertEqual(distance('Non-RCWA Algae'), 0.0)
+
+
+def distance(other: str) -> float:
+    return web.distance('Piddock Clam', other)
+
+
 def make_image(category: str, label: str, credit: str) -> Image:
     new = Image('/a/b/c', '', '')
     new.category = category

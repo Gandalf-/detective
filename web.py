@@ -69,6 +69,7 @@ def writer(tree: ImageTree) -> None:
 
 
 def distance(a: str, b: str) -> float:
+    other = 'Non-' in a + b
     tree = taxonomy.load_taxonomy()
 
     at = tree[a].split(' ')
@@ -81,7 +82,10 @@ def distance(a: str, b: str) -> float:
         total += 1
         match += 1 if x == y else 0
 
-    return match / total
+    d = match / total
+    if d > 0 and other:
+        d = 1.0
+    return d
 
 
 def similarity_table(names: List[str]) -> SimiliarityTable:

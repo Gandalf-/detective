@@ -13,7 +13,9 @@ from util import config
 
 def unacceptable(image: Image) -> bool:
     known = _load_dimensions()
-    width, height = known[image.id]
+
+    unknown = (float('inf'), float('inf'))
+    width, height = known.get(image.id, unknown)
 
     minimum = 1_500_000
     return width * height < minimum

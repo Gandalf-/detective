@@ -64,6 +64,10 @@ class TestImageTree(unittest.TestCase):
         for spec, images in tree.items():
             self.assertNotEqual(images, [])
 
+        self.assertIn('Non-RCWA Fish', tree.keys())
+        self.assertIn('Non-RCWA Algae', tree.keys())
+        self.assertIn('Non-RCWA Invert', tree.keys())
+
 
 def get_by_code(code: str) -> Species:
     species_list = species.load_species()
