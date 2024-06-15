@@ -45,16 +45,16 @@ class TestSpecies(unittest.TestCase):
         self.assertEqual(sieve_kelp.common, 'Sieve Kelp')
         self.assertEqual(sieve_kelp.scientific, 'Agarum clathratum')
 
-    def test_ignore_yoy(self) -> None:
-        try:
-            get_by_code('YBY')
-            self.fail('Should have thrown StopIteration')
-        except StopIteration:
-            pass
-
     def test_parse_urchins(self) -> None:
         purple = get_by_code('PPU')
         self.assertEqual(purple.common, 'Purple Urchin')
+
+    def test_yoy(self) -> None:
+        puget_sound = get_by_code('YPS')
+        self.assertEqual(puget_sound.common, 'YOY Puget Sound')
+
+        multi = get_by_code('YBCQ')
+        self.assertEqual(multi.common, 'YOY Brown/Copper/Quillback')
 
 
 class TestImageTree(unittest.TestCase):

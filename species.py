@@ -36,10 +36,6 @@ def load_species() -> List[Species]:
         reader = csv.reader(fd)
         for row in reader:
             common, scientific, code = row
-            if 'YOY' in common:
-                # XXX Ignore Young of Year for now
-                continue
-
             new = Species(common, scientific, code)
 
             metrics.counter('species wanted')

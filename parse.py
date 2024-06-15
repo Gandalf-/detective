@@ -13,6 +13,7 @@ def parse_name(filename: str) -> Tuple[str, str]:
 
     name = titlecase_to_spaces(name)
     name = strip_irrelevant(name)
+    name = handle_yoy(name)
     name = name.strip()
 
     credit = titlecase_to_spaces(credit)
@@ -61,6 +62,25 @@ def handle_mc_last(name: str) -> str:
         return ' '.join(parts[:-2] + [f'Mc{parts[-1]}'])
     else:
         return name
+
+
+def handle_yoy(name: str) -> str:
+    if 'YOY' not in name:
+        return name
+
+    name = name.replace('YOY', '').strip()
+    name = name.replace('Rockfish', '').strip()
+
+    name = {
+        'Black': 'Black/Yellowtail',
+        'Yellowtail': 'Black/Yellowtail',
+        'Blue': 'Blue/Deacon',
+        'Deacon': 'Blue/Deacon',
+        'Brown': 'Brown/Copper/Quillback',
+        'Copper': 'Brown/Copper/Quillback',
+        'Quillback': 'Brown/Copper/Quillback',
+    }.get(name, name)
+    return f'YOY {name}'
 
 
 def titlecase_to_spaces(x: str) -> str:

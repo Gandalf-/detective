@@ -37,7 +37,7 @@ def load_category(category: str) -> List[Image]:
         if not os.path.isdir(root_path):
             continue
 
-        if root in ('Unidentified', 'Other Mixed', 'YOY'):
+        if root in ('Unidentified', 'Other Mixed'):
             continue
 
         images.extend(load_root(root_path))

@@ -102,6 +102,44 @@ class TestParseName(unittest.TestCase):
         filename = "GiantKelp_TomO'Leary.jpg"
         self.assertEqual(parse.parse_name(filename), ('Giant Kelp', "Tom O'Leary"))
 
+    def test_yoy_black_yellowtail(self) -> None:
+        filename = 'BlackRockfishYOY_BenTroxell.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Black/Yellowtail', 'Ben Troxell'))
+
+        filename = 'YellowtailRockfishYOY2-TabithaJM.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Black/Yellowtail', 'Tabitha JM'))
+
+    def test_yoy_blue_deacon(self) -> None:
+        filename = 'BlueRockfishYOY_ChrisHoneyman (2).jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Blue/Deacon', 'Chris Honeyman'))
+        # No Deacon YOY's
+
+    def test_yoy_bocaccio(self) -> None:
+        filename = 'BocaccioYOY_AndrewHarmer.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Bocaccio', 'Andrew Harmer'))
+
+    def test_yoy_brown_copper_quillback(self) -> None:
+        filename = 'BrownRockfishYOY-TabithaJM.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Brown/Copper/Quillback', 'Tabitha JM'))
+
+        filename = 'CopperRockfishYOY3-TabithaJM.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Brown/Copper/Quillback', 'Tabitha JM'))
+
+        filename = 'QuillbackRockfishYOY.LauraTesler.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Brown/Copper/Quillback', 'Laura Tesler'))
+
+    def test_yoy_canary(self) -> None:
+        filename = 'CanaryRockfishYOY-AdamObaza.png'
+        self.assertEqual(parse.parse_name(filename), ('YOY Canary', 'Adam Obaza'))
+
+    def test_yoy_puget_sound(self) -> None:
+        filename = 'PugetSoundRockfishYOY4-TabithaJM (1).jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Puget Sound', 'Tabitha JM'))
+
     def test_yoy_vermillion(self) -> None:
-        filename = 'VermilionRockfishYOY-Jackie3.JPG'
-        self.assertEqual(parse.parse_name(filename), ('Vermilion Rockfish YOY', 'Jackie'))
+        filename = 'VermilionRockfishYOY_SelenaMcMillan (5).JPG'
+        self.assertEqual(parse.parse_name(filename), ('YOY Vermilion', 'Selena McMillan'))
+
+    def test_yoy_yelloweye(self) -> None:
+        filename = 'YelloweyeRockfishYOY-LauraTesler.jpg'
+        self.assertEqual(parse.parse_name(filename), ('YOY Yelloweye', 'Laura Tesler'))

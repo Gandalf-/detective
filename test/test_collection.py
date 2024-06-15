@@ -126,4 +126,7 @@ class TestLoad(unittest.TestCase):
         for img in images:
             self.assertTrue(os.path.exists(img.path))
             self.assertNotEqual(img.credit, '', img)
-            self.assertEqual(img.g_label, 'YOY')
+
+        labels = {img.g_label for img in images}
+        self.assertIn('YOY Puget Sound', labels)
+        self.assertIn('YOY Black/Yellowtail', labels)

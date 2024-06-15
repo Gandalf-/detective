@@ -1,48 +1,54 @@
 fish:
-  perch:
-    Pile Perch:
-    Striped Perch:
-    Shiner Perch:
-    Kelp Perch:
-    Forage Fish:
+  a:
+    perch:
+      Pile Perch:
+      Striped Perch:
+      Shiner Perch:
+      Kelp Perch:
+      Forage Fish:
   rockfish:
-    Black Rockfish:
-    Brown Rockfish:
-    China Rockfish:
-    Copper Rockfish:
-    Gopher Rockfish:
-    Grass Rockfish:
-    Puget Sound Rockfish:
-    Quillback Rockfish:
-    Vermilion Rockfish:
-    Olive Yellowtail Rockfish:
-    Canary Rockfish:
-    Yelloweye Rockfish:
-    Blue Rockfish:
-    Deacon Rockfish:
-    YOY-Black/Yellowtail:
-    YOY-Vermilion:
-    YOY-Brown/Copper/Quillback:
-    YOY-Puget Sound:
-    YOY-Blue/Deacon:
-    YOY-Canary:
-    YOY-Bocaccio:
-    YOY-Yelloweye:
-  greenling:
-    Kelp Greenling Male:
-    Kelp Greenling Female:
-    Kelp Greenling Juvenile:
-    Whitespotted Greenling:
-  sculpin:
-    Buffalo Sculpin:
-    Cabezon:
-    Red Irish Lord:
-    Lingcod:
-  shark:
-    Wolf Eel:
-    Spotted Ratfish:
-    Spiny Dogfish:
-    Sixgill Shark:
+    adult:
+      Black Rockfish:
+      Brown Rockfish:
+      China Rockfish:
+      Copper Rockfish:
+      Gopher Rockfish:
+      Grass Rockfish:
+      Puget Sound Rockfish:
+      Quillback Rockfish:
+      Vermilion Rockfish:
+      Olive Yellowtail Rockfish:
+      Canary Rockfish:
+      Yelloweye Rockfish:
+      Blue Rockfish:
+      Deacon Rockfish:
+    young-of-year:
+      YOY Black/Yellowtail:
+      YOY Vermilion:
+      YOY Brown/Copper/Quillback:
+      YOY Puget Sound:
+      YOY Blue/Deacon:
+      YOY Canary:
+      YOY Bocaccio:
+      YOY Yelloweye:
+  b:
+    greenling:
+      Kelp Greenling Male:
+      Kelp Greenling Female:
+      Kelp Greenling Juvenile:
+      Whitespotted Greenling:
+  c:
+    sculpin:
+      Buffalo Sculpin:
+      Cabezon:
+      Red Irish Lord:
+      Lingcod:
+  d:
+    shark:
+      Wolf Eel:
+      Spotted Ratfish:
+      Spiny Dogfish:
+      Sixgill Shark:
   Non-RCWA Fish:
 kelp:
   Bull Kelp:
@@ -60,22 +66,25 @@ kelp:
   Acid Weed:
   Non-RCWA Algae:
 invert:
-  crab:
-    Rock Crab:
-    Green Crab:
-    Dungeness Crab:
-    Kelp Crab:
-    Slender Graceful Crab:
-  anemone:
-    Large Anemone:
-    Giant Plumose Anemone:
-  mollusc:
-    Gumboot Chiton:
-    Giant Pacific Octopus:
-    Rock Scallop:
-    Hairy Triton:
-    Piddock Clam:
-    Pinto Abalone:
+  arthropod:
+    crab:
+      Rock Crab:
+      Green Crab:
+      Dungeness Crab:
+      Kelp Crab:
+      Slender Graceful Crab:
+  cnidarian:
+    anemone:
+      Large Anemone:
+      Giant Plumose Anemone:
+  bivalve:
+    mollusc:
+      Gumboot Chiton:
+      Giant Pacific Octopus:
+      Rock Scallop:
+      Hairy Triton:
+      Piddock Clam:
+      Pinto Abalone:
   echinoderm:
     cucumber:
       California Sea Cucumber:

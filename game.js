@@ -113,7 +113,7 @@ function success(where) {
 
     let points = Math.pow(10, 1 + get_difficulty());
     for (let i = 0; i < g_mistakes; i++) {
-        points = Math.floor(points / 2);
+        points = Math.floor(points / 10);
     }
     console.log(`adding ${points} points for ${get_difficulty()}`)
     g_points += points;
@@ -305,7 +305,6 @@ function find_similar(target, lowerBound, upperBound, required) {
             // We've looped through, relax the constraints.
             lowerBound = Math.max(0, lowerBound - 5);
             upperBound = Math.min(100, upperBound + 5);
-            console.log("new limits", lowerBound, upperBound);
             shuffledIndices = shuffle([...Array(g_names.length).keys()]);
         }
 

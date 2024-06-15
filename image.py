@@ -10,7 +10,11 @@ class Image:
     def __init__(self, path: str, label: str, credit: str) -> None:
         self.path = path
         self.s_label = label
-        self.g_label = self._general_label()
+        if 'YOY ' in label:
+            self.g_label = label
+        else:
+            self.g_label = _label_from_path(path)
+
         self.credit = credit
         if credit == 'Wei Chang':
             self.credit = 'Shou-Wei Chang'
@@ -23,21 +27,22 @@ class Image:
     def __repr__(self) -> str:
         return f'{self.g_label} - {self.credit}'
 
-    def _general_label(self) -> str:
-        relative_path = os.path.dirname(os.path.relpath(self.path, config.img_root))
-        label = relative_path.split(os.sep, 1)[1].replace('/', ' ')
-        label = label.split('(')[0].strip()
 
-        conversions = {
-            'Anemones': 'Large Anemone',
-            'Pterygophora': 'Woody Kelp',
-            'Sargassum horneri': 'Horn Weed',
-            'Laminaria setchelii': 'Torn Kelp',
-            'Sargassum muticum': 'Wire Weed',
-            'Three-ribbed Kelp': 'Three ribbed Kelp',
-            'Five-ribbed Kelp': 'Five ribbed Kelp',
-            "Stimpson's Sun Star": 'Blue Striped Sun Star',
-            'False Ochre Star': 'Mottled Star',
-        }
+def _label_from_path(path: str) -> str:
+    relative_path = os.path.dirname(os.path.relpath(path, config.img_root))
+    label = relative_path.split(os.sep, 1)[1].replace('/', ' ')
+    label = label.split('(')[0].strip()
 
-        return conversions.get(label, label)
+    conversions = {
+        'Anemones': 'Large Anemone',
+        'Pterygophora': 'Woody Kelp',
+        'Sargassum horneri': 'Horn Weed',
+        'Laminaria setchelii': 'Torn Kelp',
+        'Sargassum muticum': 'Wire Weed',
+        'Three-ribbed Kelp': 'Three ribbed Kelp',
+        'Five-ribbed Kelp': 'Five ribbed Kelp',
+        "Stimpson's Sun Star": 'Blue Striped Sun Star',
+        'False Ochre Star': 'Mottled Star',
+    }
+
+    return conversions.get(label, label)

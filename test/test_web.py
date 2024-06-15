@@ -40,8 +40,8 @@ class TestTableBuilder(unittest.TestCase):
 class TestDistance(unittest.TestCase):
     def test_simple(self) -> None:
         self.assertEqual(distance('Piddock Clam'), 1.0)
-        self.assertEqual(distance('Hairy Triton'), 0.5)
-        self.assertEqual(distance('Large Anemone'), 0.25)
+        self.assertEqual(distance('Hairy Triton'), 0.6)
+        self.assertEqual(distance('Large Anemone'), 0.2)
         self.assertEqual(distance('Acid Weed'), 0.0)
 
     def test_non_rcwa(self) -> None:
