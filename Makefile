@@ -1,11 +1,14 @@
 www = ~/working/object-publish/detective
 
 .PHONY: local serve clean sync
-local:
+local: $(www)/favicon.ico
 	python3 web.py
 
 serve:
 	@serve $(www)
+
+$(www)/favicon.ico: data/microscope.png
+	convert data/microscope.png -define icon:auto-resize=16,32,48 favicon.ico
 
 clean:
 	rm $(www)/{large,small}/*
