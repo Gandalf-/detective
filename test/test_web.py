@@ -16,23 +16,30 @@ class TestTableBuilder(unittest.TestCase):
         self.assertEqual(ns, ['Acid Weed', 'Broad Ribbed Kelp', 'Bull Kelp'])
 
     def test_category_indicies(self) -> None:
-        salmon = make_image('Fish', 'Salmon', 'John Doe')
-        urchin = make_image('Inverts', 'Urchin', 'Jane Doe')
+        salmon = make_image('Fish', 'Cabezon', 'John Doe')
+        urchin = make_image('Inverts', 'Purple Urchin', 'Jane Doe')
         winged = make_image('Algae', 'Winged Kelp', 'John Doe')
-        anemone = make_image('Inverts', 'Anemone', 'Jane Doe')
+        anemone = make_image('Inverts', 'Large Anemone', 'Jane Doe')
+        oregon_only = make_image('Inverts', 'Masking Crab', 'Jane Doe')
+
         tree = {
             'a': [salmon],
             'b': [urchin],
             'c': [winged],
             'd': [anemone],
+            'e': [oregon_only],
         }
 
         indicies = web.category_indices(tree)
         expected = {
             'Washington': [0, 1, 2, 3],
-            'Fish': [0],
-            'Inverts': [1, 3],
-            'Algae': [2],
+            'WA Fish': [0],
+            'WA Inverts': [1, 3],
+            'WA Algae': [2],
+            'Oregon': [0, 1, 3, 4],
+            'OR Fish': [0],
+            'OR Inverts': [1, 3, 4],
+            'OR Algae': [],
         }
         self.assertEqual(indicies, expected)
 
@@ -45,9 +52,9 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(distance('Acid Weed'), 0.0)
 
     def test_non_rcwa(self) -> None:
-        self.assertEqual(distance('Non-RCWA Invert'), 1.0)
-        self.assertEqual(distance('Non-RCWA Fish'), 0.0)
-        self.assertEqual(distance('Non-RCWA Algae'), 0.0)
+        self.assertEqual(distance('Non-RC Invert'), 1.0)
+        self.assertEqual(distance('Non-RC Fish'), 0.0)
+        self.assertEqual(distance('Non-RC Algae'), 0.0)
 
 
 def distance(other: str) -> float:

@@ -120,11 +120,25 @@ def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
         'WA Fish': [],
         'WA Inverts': [],
         'WA Algae': [],
+        'Oregon': [],
+        'OR Fish': [],
+        'OR Inverts': [],
+        'OR Algae': [],
     }
 
+    wa_names = {s.common for s in species.load_wa_species()}
+    or_names = {s.common for s in species.load_or_species()}
+
     for i, img in enumerate(examples):
-        indicies['Washington'].append(i)
-        indicies[f'WA {img.category}'].append(i)
+        if img.g_label in wa_names:
+            indicies['Washington'].append(i)
+            indicies[f'WA {img.category}'].append(i)
+            metrics.counter('species for WA')
+
+        if img.g_label in or_names:
+            indicies['Oregon'].append(i)
+            indicies[f'OR {img.category}'].append(i)
+            metrics.counter('species for OR')
 
     return indicies
 
@@ -158,6 +172,10 @@ def html_builder(css: str, game: str, data: str) -> str:
                     <option value="WA Algae">WA Algae</option>
                     <option value="WA Fish">WA Fish</option>
                     <option value="WA Inverts">WA Inverts</option>
+                    <option value="Oregon">Oregon</option>
+                    <option value="OR Algae">OR Algae</option>
+                    <option value="OR Fish">OR Fish</option>
+                    <option value="OR Inverts">OR Inverts</option>
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>

@@ -1,7 +1,7 @@
 Blue Rockfish,Sebastes mystinus,BLU
 Deacon Rockfish,Sebastes diaconus,DCR
 Black Rockfish,Sebastes melanops,BLK
-Black & yellow Rockfish,Sebastes chrysomelas,BYR
+Black and Yellow Rockfish,Sebastes chrysomelas,BYR
 Puget Sound Rockfish,Sebastes emphaeus,PSR
 Yellowtail Rockfish,Sebastes serranoides,YTR
 Gopher Rockfish,Sebastes carnatus,GOR
@@ -13,9 +13,8 @@ Yelloweye Rockfish,Sebastes ruberrimus,YER
 Quillback Rockfish,Sebastes maliger,QBR
 Brown Rockfish,Sebastes auriculatus,BRR
 China Rockfish,Sebastes nebulosus,CHR
-YOY Rockfish,Sebastes spp.,YOY
-Striped perch,Embiotoca lateralis,STP
-Pile perch,Rhacochilus vacca,PIP
+Striped Perch,Embiotoca lateralis,STP
+Pile Perch,Rhacochilus vacca,PIP
 Kelp Greenling-Male,Hexagrammos decagrammus,KGM
 Kelp Greenling-Female,Hexagrammos decagrammus,KGF
 Kelp Greenling-Juvenile,Hexagrammos decagrammus,KGJ
@@ -29,9 +28,9 @@ Spotted Ratfish,Hydrolagus colliei,SPR
 Bull Kelp,Nerocystis luetkeana,BK
 Woody Kelp,Pterygophora californica,WK
 Torn Kelp,Laminaria setchellii,TK
-Feather Boa,Egregia menziesii,FB
+Feather Boa Kelp,Egregia menziesii,FB
 Giant Kelp,Macrocystis pyrifera,GK
-Ribbed kelp,Pleurophycus gardneri,RK
+Broad Ribbed Kelp,Pleurophycus gardneri,RK
 Wire Weed,Sargassum muticum,WW
 Red Abalone,Haliotis rufescens,RDA
 Flat Abalone,Haliotis walallensis,FLA
@@ -39,23 +38,23 @@ Flat Abalone,Haliotis kamtschatkana,PTA
 Giant Pacific Octopus,Enteroctopus dofleini,GPO
 California Sea Cucumber,Parastichopus californicus,CAC
 Gumboot Chiton,Cryptochiton stelleri,GBC
-Plumose Anemone,Metridium farcimen,PLA
+Giant Plumose Anemone,Metridium farcimen,PLA
 Large Anemone,,LGA
 Rock Scallop,Crassadoma giganteum,RKS
 Bat Star,Patiria miniata,BTS
-Short Spined Star,Pisaster brevispinus,SSS
-Giant Spined Star,Pisaster giganteus,GSS
+Short Spined Sea Star,Pisaster brevispinus,SSS
+Giant Spined Sea Star,Pisaster giganteus,GSS
 Leather Star,Dermasterias imbricata,LHS
 Ochre Star,Pisaster ochraceus,OCS
 Mottled Star,Evasterias troschelii,FOS
 Blood Star,Henricia leviuscula,BDS
 Rainbow Star,Orthasterias koehleri,RBS
 Sunflower Star,Pycnopodia helianthoides,SFS
-Dawson Sunstar,Solaster dawsoni,DSN
+Dawson's Sun Star,Solaster dawsoni,DSN
 Blue Striped Sun Star,Solaster stimpsoni,SSN
 Kelp Crab,Pugettia spp.,KPC
 Rock Crab,Cancer spp.,RKC
-Masking crab,Loxorhynchus crispatus,MKC
+Masking Crab,Loxorhynchus crispatus,MKC
 Red Urchin,Mesocentrotus franciscanus,RDU
 Purple Urchin,Strongylocentrotus purpuratus,PPU
 Green Urchin,Strongylocentrotus droebachiensis,GRU
