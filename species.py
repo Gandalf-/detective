@@ -45,8 +45,9 @@ def build_image_tree() -> ImageTree:
     wa_species = load_wa_species()
     or_species = load_or_species()
 
-    all_common = {spec.common for spec in wa_species}
-    all_common.update({spec.common for spec in or_species})
+    wa_common = {spec.common for spec in wa_species}
+    or_common = {spec.common for spec in or_species}
+    all_common = wa_common | or_common
     other = set()
 
     for img in collection.load_images():
@@ -55,8 +56,13 @@ def build_image_tree() -> ImageTree:
             continue
 
         other.add(img.g_label)
-        other_label = f'Non-RC {img.category}'.strip('s')
-        tree.setdefault(other_label, []).append(img)
+        if img.g_label not in wa_common:
+            other_label = f'Non-RCWA {img.category}'.strip('s')
+            tree.setdefault(other_label, []).append(img)
+
+        if img.g_label not in or_common:
+            other_label = f'Non-RCOR {img.category}'.strip('s')
+            tree.setdefault(other_label, []).append(img)
 
     found = set(tree.keys())
     missing = all_common - found

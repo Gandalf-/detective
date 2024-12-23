@@ -46,7 +46,8 @@ fish:
     Spotted Ratfish:
     Spiny Dogfish:
     Sixgill Shark:
-  Non-RC Fish:
+  Non-RCWA Fish:
+  Non-RCOR Fish:
 kelp:
   Bull Kelp:
   Torn Kelp:
@@ -61,7 +62,8 @@ kelp:
   Winged Kelp:
   Five ribbed Kelp:
   Acid Weed:
-  Non-RC Algae:
+  Non-RCWA Algae:
+  Non-RCOR Algae:
 invert:
   arthropod:
     crab:
@@ -106,4 +108,5 @@ invert:
       Red Urchin:
       Green Urchin:
       Pallid Urchin:
-  Non-RC Invert:
+  Non-RCWA Invert:
+  Non-RCOR Invert:

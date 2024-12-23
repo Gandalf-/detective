@@ -279,6 +279,18 @@ function choose_correct(choices) {
   return choices[random(choices.length)];
 }
 
+function incorrect_location(candidate) {
+  if (!candidate.startsWith('Non-RC')) {
+    return false;
+  }
+
+  const game = byId('game').value;
+  const needed = game.substring(0, 2).toUpperCase();
+
+  const actual = candidate.substring(6, 8);
+  return actual !== needed;
+}
+
 /**
  * Find similar creatures as the provided target.
  *
@@ -315,6 +327,10 @@ function find_similar(target, lowerBound, upperBound, required) {
 
     const candidate = shuffledIndices.pop();
     if (candidate === target || found.includes(candidate)) {
+      continue;
+    }
+
+    if (incorrect_location(g_names[candidate])) {
       continue;
     }
 

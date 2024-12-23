@@ -52,9 +52,14 @@ class TestDistance(unittest.TestCase):
         self.assertEqual(distance('Acid Weed'), 0.0)
 
     def test_non_rcwa(self) -> None:
-        self.assertEqual(distance('Non-RC Invert'), 1.0)
-        self.assertEqual(distance('Non-RC Fish'), 0.0)
-        self.assertEqual(distance('Non-RC Algae'), 0.0)
+        self.assertEqual(distance('Non-RCWA Invert'), 1.0)
+        self.assertEqual(distance('Non-RCWA Fish'), 0.0)
+        self.assertEqual(distance('Non-RCWA Algae'), 0.0)
+
+    def test_non_rcor(self) -> None:
+        self.assertEqual(distance('Non-RCOR Invert'), 1.0)
+        self.assertEqual(distance('Non-RCOR Fish'), 0.0)
+        self.assertEqual(distance('Non-RCOR Algae'), 0.0)
 
 
 def distance(other: str) -> float:
