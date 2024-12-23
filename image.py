@@ -19,6 +19,12 @@ class Image:
         if credit == 'Wei Chang':
             self.credit = 'Shou-Wei Chang'
 
+        if self.g_label == 'Treefish':
+            if 'juvenile' in path.lower():
+                self.g_label = 'Treefish Juvenile'
+            else:
+                self.g_label = 'Treefish Adult'
+
         relative_path = path.replace(config.img_root, '')
         self.id = hashlib.md5(relative_path.encode()).hexdigest()
 
@@ -43,6 +49,13 @@ def _label_from_path(path: str) -> str:
         'Five-ribbed Kelp': 'Five ribbed Kelp',
         "Stimpson's Sun Star": 'Blue Striped Sun Star',
         'False Ochre Star': 'Mottled Star',
+        'Hornshark': 'Horn Shark',
+        'Laminaria farlowii': 'Oar Kelp',
+        'Undaria': 'Wakame',
+        'Golden Gorgonian': 'California Golden/Brown Gorgonian',
+        'Brown Gorgonian': 'California Golden/Brown Gorgonian',
+        'Caulerpa taxifolia': 'Running Weed',
+        'Caulerpa prolifera': 'Running Weed',
     }
 
     return conversions.get(label, label)

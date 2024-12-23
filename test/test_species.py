@@ -7,8 +7,8 @@ from species import Species
 
 
 class TestSpecies(unittest.TestCase):
-    def test_load_wa_species(self) -> None:
-        species_list = species.load_wa_species()
+    def test_load_washington_species(self) -> None:
+        species_list = species.load_washington()
         self.assertNotEqual(species_list, [])
 
         for spec in species_list:
@@ -16,8 +16,17 @@ class TestSpecies(unittest.TestCase):
             self.assertNotEqual(spec.scientific, '')
             self.assertNotEqual(spec.code, '')
 
-    def test_load_or_species(self) -> None:
-        species_list = species.load_or_species()
+    def test_load_oregon_species(self) -> None:
+        species_list = species.load_oregon()
+        self.assertNotEqual(species_list, [])
+
+        for spec in species_list:
+            self.assertNotEqual(spec.common, '')
+            self.assertNotEqual(spec.scientific, '')
+            self.assertNotEqual(spec.code, '')
+
+    def test_load_california_species(self) -> None:
+        species_list = species.load_california()
         self.assertNotEqual(species_list, [])
 
         for spec in species_list:
@@ -26,7 +35,7 @@ class TestSpecies(unittest.TestCase):
             self.assertNotEqual(spec.code, '')
 
     def test_uniqueness(self) -> None:
-        species_list = species.load_wa_species()
+        species_list = species.load_washington()
 
         common_names = {spec.common for spec in species_list}
         self.assertEqual(len(common_names), len(species_list))
@@ -80,11 +89,14 @@ class TestImageTree(unittest.TestCase):
             'Non-RCOR Fish',
             'Non-RCOR Algae',
             'Non-RCOR Invert',
+            'Non-RCCA Fish',
+            'Non-RCCA Algae',
+            'Non-RCCA Invert',
         )
         for other in others:
             self.assertIn(other, tree.keys())
 
 
 def get_by_code(code: str) -> Species:
-    species_list = species.load_wa_species()
+    species_list = species.load_washington()
     return next((spec for spec in species_list if spec.code == code))

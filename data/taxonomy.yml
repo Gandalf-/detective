@@ -5,7 +5,11 @@ fish:
     Shiner Perch:
     Kelp Perch:
     Forage Fish:
+    Black Perch:
+    Rainbow Perch:
+    Rubberlip Perch:
   rockfish:
+    Kelp Rockfish:
     Black Rockfish:
     Black and Yellow Rockfish:
     Brown Rockfish:
@@ -22,6 +26,8 @@ fish:
     Yellowtail Rockfish:
     Blue Rockfish:
     Deacon Rockfish:
+    Treefish Adult:
+    Treefish Juvenile:
   young-of-year:
     YOY Black/Yellowtail:
     YOY Vermilion:
@@ -36,6 +42,21 @@ fish:
     Kelp Greenling Female:
     Kelp Greenling Juvenile:
     Whitespotted Greenling:
+  sheephead:
+    Sheephead Male:
+    Sheephead Female:
+    Sheephead Juvenile:
+  wrasse:
+    Senorita:
+    Rock Wrasse Male:
+    Rock Wrasse Female:
+    Rock Wrasse Juvenile:
+  bass:
+    Kelp Bass:
+    Barred Sand Bass:
+    Garibaldi Adult:
+    Garibaldi Juvenile:
+    Giant Sea Bass:
   sculpin:
     Buffalo Sculpin:
     Cabezon:
@@ -46,8 +67,17 @@ fish:
     Spotted Ratfish:
     Spiny Dogfish:
     Sixgill Shark:
+    Horn Shark:
+  california:
+    Blacksmith:
+    Opaleye:
+    Sargo:
+    Halfmoon:
+    Largemouth Blenny:
+    Finescale Triggerfish:
   Non-RCWA Fish:
   Non-RCOR Fish:
+  Non-RCCA Fish:
 kelp:
   Bull Kelp:
   Torn Kelp:
@@ -62,8 +92,14 @@ kelp:
   Winged Kelp:
   Five ribbed Kelp:
   Acid Weed:
+  Southern Sea Palm:
+  Oar Kelp:
+  Horn Weed:
+  Wakame:
+  Running Weed:
   Non-RCWA Algae:
   Non-RCOR Algae:
+  Non-RCCA Algae:
 invert:
   arthropod:
     crab:
@@ -73,22 +109,40 @@ invert:
       Kelp Crab:
       Slender Graceful Crab:
       Masking Crab:
+      Sheep Crab:
+    other:
+      California Spiny Lobster:
   cnidarian:
     anemone:
       Large Anemone:
       Giant Plumose Anemone:
+      California Golden/Brown Gorgonian:
+      Red Gorgonian:
   bivalve:
     mollusc:
-      Gumboot Chiton:
-      Giant Pacific Octopus:
-      Rock Scallop:
-      Hairy Triton:
-      Piddock Clam:
-      Pinto Abalone:
-      Red Abalone:
-      Flat Abalone:
+      other:
+        Chestnut Cowrie:
+        Kellet's Whelk:
+        Gumboot Chiton:
+        Giant Pacific Octopus:
+        Rock Scallop:
+        Hairy Triton:
+        Piddock Clam:
+        Wavy Red Turban Snail:
+        Giant Keyhole Limpet:
+        California Sea Hare:
+        Black Sea Hare:
+      abalone:
+        Pinto Abalone:
+        Red Abalone:
+        Flat Abalone:
+        Green Abalone:
+        Black Abalone:
+        Pink Abalone:
+        White Abalone:
   echinoderm:
     cucumber:
+      Warty Sea Cucumber:
       California Sea Cucumber:
       Orange Burrowing Cucumber:
     star:
@@ -98,6 +152,7 @@ invert:
       Leather Star:
       Ochre Star:
       Blue Striped Sun Star:
+      Sun Star:
       Sunflower Star:
       Mottled Star:
       Blood Star:
@@ -108,5 +163,8 @@ invert:
       Red Urchin:
       Green Urchin:
       Pallid Urchin:
+      Crowned Urchin:
+      Starry Urchin:
   Non-RCWA Invert:
   Non-RCOR Invert:
+  Non-RCCA Invert:

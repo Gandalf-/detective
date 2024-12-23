@@ -124,10 +124,15 @@ def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
         'OR Fish': [],
         'OR Inverts': [],
         'OR Algae': [],
+        'California': [],
+        'CA Fish': [],
+        'CA Inverts': [],
+        'CA Algae': [],
     }
 
-    wa_names = {s.common for s in species.load_wa_species()}
-    or_names = {s.common for s in species.load_or_species()}
+    wa_names = {s.common for s in species.load_washington()}
+    or_names = {s.common for s in species.load_oregon()}
+    ca_names = {s.common for s in species.load_california()}
 
     for i, img in enumerate(examples):
         if img.g_label in wa_names:
@@ -140,8 +145,13 @@ def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
             indicies[f'OR {img.category}'].append(i)
             metrics.counter('species for OR')
 
+        if img.g_label in ca_names:
+            indicies['California'].append(i)
+            indicies[f'CA {img.category}'].append(i)
+            metrics.counter('species for CA')
+
     for category in indicies:
-        if category in ('Washington', 'Oregon'):
+        if category in ('Washington', 'Oregon', 'California'):
             continue
 
         inverse = f'Non-RC{category}'.strip('s')
@@ -184,10 +194,16 @@ def html_builder(css: str, game: str, data: str) -> str:
                     <option value="WA Algae">WA Algae</option>
                     <option value="WA Fish">WA Fish</option>
                     <option value="WA Inverts">WA Inverts</option>
+
                     <option value="Oregon">Oregon</option>
                     <option value="OR Algae">OR Algae</option>
                     <option value="OR Fish">OR Fish</option>
                     <option value="OR Inverts">OR Inverts</option>
+
+                    <option value="California">California</option>
+                    <option value="CA Algae">CA Algae</option>
+                    <option value="CA Fish">CA Fish</option>
+                    <option value="CA Inverts">CA Inverts</option>
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>

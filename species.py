@@ -27,12 +27,16 @@ class Species:
         return f'{self.common} - {self.scientific} - {self.code}'
 
 
-def load_wa_species() -> List[Species]:
+def load_washington() -> List[Species]:
     return _load_csv('wa')
 
 
-def load_or_species() -> List[Species]:
+def load_oregon() -> List[Species]:
     return _load_csv('or')
+
+
+def load_california() -> List[Species]:
+    return _load_csv('ca')
 
 
 ImageTree = Dict[str, List[Image]]
@@ -42,12 +46,10 @@ ImageTree = Dict[str, List[Image]]
 def build_image_tree() -> ImageTree:
     tree: Dict[str, List[Image]] = {}
 
-    wa_species = load_wa_species()
-    or_species = load_or_species()
-
-    wa_common = {spec.common for spec in wa_species}
-    or_common = {spec.common for spec in or_species}
-    all_common = wa_common | or_common
+    wa_common = {spec.common for spec in load_washington()}
+    or_common = {spec.common for spec in load_oregon()}
+    ca_common = {spec.common for spec in load_california()}
+    all_common = wa_common | or_common | ca_common
     other = set()
 
     for img in collection.load_images():
@@ -62,6 +64,10 @@ def build_image_tree() -> ImageTree:
 
         if img.g_label not in or_common:
             other_label = f'Non-RCOR {img.category}'.strip('s')
+            tree.setdefault(other_label, []).append(img)
+
+        if img.g_label not in ca_common:
+            other_label = f'Non-RCCA {img.category}'.strip('s')
             tree.setdefault(other_label, []).append(img)
 
     found = set(tree.keys())
