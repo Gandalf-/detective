@@ -38,8 +38,8 @@ def create_webp(images: List[Image]) -> None:
 # PRIVATE
 
 
-def _convert(opts: List[str]) -> None:
-    defaults = ['convert', '-strip', '-auto-orient']
+def _convert(fname: str, opts: List[str]) -> None:
+    defaults = ['magick', fname, '-strip', '-auto-orient']
     cmd = defaults + opts
     subprocess.run(cmd)
 
@@ -49,14 +49,14 @@ def _create_thumbnail(image: Image) -> None:
     if os.path.exists(output):
         return
     _convert(
+        image.path,
         [
             '-quality',
             '70%',
             '-resize',
             '320000@',
-            image.path,
             output,
-        ]
+        ],
     )
 
 
@@ -65,10 +65,10 @@ def _create_fullsize(image: Image) -> None:
     if os.path.exists(output):
         return
     _convert(
+        image.path,
         [
             '-quality',
             '35',
-            image.path,
             output,
-        ]
+        ],
     )

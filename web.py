@@ -188,6 +188,11 @@ def html_builder(css: str, game: str, data: str) -> str:
             </div>
         </div>
 
+        <footer>
+            <p><a href="https://goto.anardil.net">goto.anardil.net</a></p>
+            <p>austin@anardil.net 2024</p>
+        </footer>
+
         <script>
             choose_game();
         </script>
