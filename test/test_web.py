@@ -16,31 +16,35 @@ class TestTableBuilder(unittest.TestCase):
         self.assertEqual(ns, ['Acid Weed', 'Broad Ribbed Kelp', 'Bull Kelp'])
 
     def test_category_indicies(self) -> None:
-        salmon = make_image('Fish', 'Cabezon', 'John Doe')
+        sculpin = make_image('Fish', 'Cabezon', 'John Doe')
         urchin = make_image('Inverts', 'Purple Urchin', 'Jane Doe')
         winged = make_image('Algae', 'Winged Kelp', 'John Doe')
         anemone = make_image('Inverts', 'Large Anemone', 'Jane Doe')
-        oregon_only = make_image('Inverts', 'Masking Crab', 'Jane Doe')
+        oregon_fish = make_image('Fish', 'Black and Yellow Rockfish', 'Jane Doe')
+        oregon_abalone = make_image('Inverts', 'Red Abalone', 'Jane Doe')
 
         tree = {
-            'a': [salmon],
-            'b': [urchin],
-            'c': [winged],
-            'd': [anemone],
-            'e': [oregon_only],
+            'A': [sculpin],
+            'B': [urchin],
+            'C': [winged],
+            'D': [anemone],
+            'E': [oregon_fish],
+            'Non-RCWA Invert': [oregon_abalone],
         }
 
         indicies = web.category_indices(tree)
         expected = {
             'Washington': [0, 1, 2, 3],
             'WA Fish': [0],
-            'WA Inverts': [1, 3],
+            'WA Inverts': [1, 3, 5],
             'WA Algae': [2],
-            'Oregon': [0, 1, 3, 4],
-            'OR Fish': [0],
-            'OR Inverts': [1, 3, 4],
+            'Oregon': [0, 1, 3, 4, 5],
+            'OR Fish': [0, 4],
+            'OR Inverts': [1, 3, 5],
             'OR Algae': [],
         }
+
+        self.maxDiff = None
         self.assertEqual(indicies, expected)
 
 

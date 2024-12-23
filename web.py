@@ -140,6 +140,18 @@ def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
             indicies[f'OR {img.category}'].append(i)
             metrics.counter('species for OR')
 
+    for category in indicies:
+        if category in ('Washington', 'Oregon'):
+            continue
+
+        inverse = f'Non-RC{category}'.strip('s')
+        if inverse not in tree:
+            continue
+
+        inverse_img = tree[inverse][0]
+        i = examples.index(inverse_img)
+        indicies[category].append(i)
+
     return indicies
 
 
