@@ -46,7 +46,7 @@ def writer(tree: ImageTree) -> None:
     similarity = str(similarity).replace(' ', '')
 
     categories = category_indices(tree)
-    categories = str(categories).replace(' ', '')
+    categories = str(categories)
 
     with open('/tmp/data.js', 'w+') as fd:
         print('var g_names =', names, file=fd)
@@ -117,14 +117,14 @@ def category_indices(tree: ImageTree) -> Dict[str, List[int]]:
 
     indicies: Dict[str, List[int]] = {
         'Washington': [],
-        'Fish': [],
-        'Inverts': [],
-        'Algae': [],
+        'WA Fish': [],
+        'WA Inverts': [],
+        'WA Algae': [],
     }
 
     for i, img in enumerate(examples):
         indicies['Washington'].append(i)
-        indicies[img.category].append(i)
+        indicies[f'WA {img.category}'].append(i)
 
     return indicies
 
@@ -155,9 +155,9 @@ def html_builder(css: str, game: str, data: str) -> str:
             <div id="control">
                 <select id="game" onchange="choose_game(0);">
                     <option value="Washington">Washington</option>
-                    <option value="Algae">WA Algae</option>
-                    <option value="Fish">WA Fish</option>
-                    <option value="Inverts">WA Inverts</option>
+                    <option value="WA Algae">WA Algae</option>
+                    <option value="WA Fish">WA Fish</option>
+                    <option value="WA Inverts">WA Inverts</option>
                 </select>
                 <div class="scoring">
                     <h3 id="score"></h3>

@@ -27,21 +27,12 @@ class Species:
         return f'{self.common} - {self.scientific} - {self.code}'
 
 
-@lru_cache(None)
-def load_species() -> List[Species]:
-    species = []
-    csv_path = f'{config.src_root}/data/species.csv'
+def load_wa_species() -> List[Species]:
+    return _load_csv('wa')
 
-    with open(csv_path) as fd:
-        reader = csv.reader(fd)
-        for row in reader:
-            common, scientific, code = row
-            new = Species(common, scientific, code)
 
-            metrics.counter('species wanted')
-            species.append(new)
-
-    return species
+def load_or_species() -> List[Species]:
+    return _load_csv('wa')
 
 
 ImageTree = Dict[str, List[Image]]
@@ -51,8 +42,8 @@ ImageTree = Dict[str, List[Image]]
 def build_image_tree() -> ImageTree:
     tree: Dict[str, List[Image]] = {}
 
-    species = load_species()
-    all_common = {spec.common for spec in species}
+    wa_species = load_wa_species()
+    all_common = {spec.common for spec in wa_species}
     other = set()
 
     for img in collection.load_images():
@@ -72,3 +63,23 @@ def build_image_tree() -> ImageTree:
         metrics.record('missing', m)
 
     return tree
+
+
+# PRIVATE
+
+
+@lru_cache(None)
+def _load_csv(fname: str) -> List[Species]:
+    species = []
+    csv_path = f'{config.src_root}/data/{fname}.csv'
+
+    with open(csv_path) as fd:
+        reader = csv.reader(fd)
+        for row in reader:
+            common, scientific, code = row
+            new = Species(common, scientific, code)
+
+            metrics.counter('species wanted')
+            species.append(new)
+
+    return species
