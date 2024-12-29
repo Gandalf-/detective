@@ -255,6 +255,7 @@ function add_zoom() {
 
     img.src = current.replace('/small/', '/large/');
     img.style.maxWidth = '100%';
+    img.style.maxHeight = '100%';
     img.style.height = 'auto';
   }
 
