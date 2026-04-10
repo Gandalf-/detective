@@ -240,6 +240,7 @@ def html_builder(css: str, game: str, data: str) -> str:
         </footer>
 
         <script>
+            document.addEventListener('keydown', handle_key_down, false);
             choose_game();
         </script>
     </body>

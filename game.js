@@ -65,6 +65,46 @@ function name_game() {
   });
 }
 
+function handle_key_down(event) {
+  var option = null;
+  switch (event.keyCode) {
+    // 1 - 9
+    case 49:
+    case 50:
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+    case 57:
+      option = 'option' + (event.keyCode - 49);
+      break;
+
+    // n
+    case 78:
+      option = 'new_example';
+      break;
+
+    // s
+    case 83:
+      option = 'skip';
+      break;
+
+    // z
+    case 90:
+      option = 'zoom';
+      break;
+  }
+
+  const elem = document.getElementById(option);
+  console.log(event, elem);
+
+  if (elem !== null) {
+    elem.click();
+  }
+}
+
 /**
  * Build an option element for the name game.
  *
@@ -216,6 +256,7 @@ function add_skip() {
   skip.addEventListener('click', () => {
     choose_game(1000);
   });
+  skip.setAttribute('id', 'skip');
   skip.innerHTML = '<h4 class="skip">Skip</h4>';
 
   byId('options').appendChild(skip);
@@ -239,6 +280,7 @@ function add_new_correct_thumbnail(correct) {
   const child = document.createElement('div');
   child.classList.add('top', 'switch', 'skip');
   child.addEventListener('click', new_correct_thumbnail);
+  child.setAttribute('id', 'new_example');
   child.innerHTML = '<h4 class="skip">New Example</h4>';
 
   byId('options').appendChild(child);
@@ -262,6 +304,7 @@ function add_zoom() {
   const zoom = document.createElement('div');
   zoom.classList.add('top', 'switch', 'skip');
   zoom.addEventListener('click', enhance);
+  zoom.setAttribute('id', 'zoom');
   zoom.innerHTML = '<h4 class="skip">Zoom</h4>';
 
   byId('options').appendChild(zoom);
