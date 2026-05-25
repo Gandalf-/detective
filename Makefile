@@ -1,8 +1,11 @@
 www = ~/working/object-publish/detective
 
-.PHONY: local serve clean sync
+.PHONY: local web serve clean sync
 local: $(www)/favicon.ico
 	python3 web.py
+
+web:
+	python3 web.py --web-only
 
 serve:
 	@serve $(www)

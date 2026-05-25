@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import argparse
+import glob
 import os
 from typing import Dict, List, Tuple
 
@@ -170,9 +172,9 @@ def html_builder(css: str, game: str, data: str) -> str:
     desc = 'Test your Reef Check ID expertise with professionally labeled images.'
     return f"""
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Diving Detective</title>
+        <title>Reef Check Detective</title>
         <link rel="canonical" href="https://detective.anardil.net/" />
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -184,11 +186,13 @@ def html_builder(css: str, game: str, data: str) -> str:
 
     <body>
         <div class="wrapper">
-            <div class="title">
-                <h1 class="top switch detective">Detective</h1>
-                <p class="scientific"></p>
-            </div>
+            <header class="title">
+                <h1>Reef Check Detective</h1>
+                <p class="scientific" id="scientific"></p>
+            </header>
+
             <div id="control">
+                <label class="visually-hidden" for="game">Region</label>
                 <select id="game" onchange="choose_game(0);">
                     <option value="Washington">Washington</option>
                     <option value="WA Algae">WA Algae</option>
@@ -209,6 +213,7 @@ def html_builder(css: str, game: str, data: str) -> str:
                     <h3 id="score"></h3>
                     <h3 id="points"></h3>
                 </div>
+                <label class="visually-hidden" for="difficulty">Difficulty</label>
                 <select id="difficulty" onchange="choose_game(0);">
                     <option value=0>Very Easy</option>
                     <option value=1>Easy</option>
@@ -218,20 +223,18 @@ def html_builder(css: str, game: str, data: str) -> str:
                 </select>
             </div>
 
-            <div id="correct_outer" class="grid correct_name">
-                <div class="choice" id="correct"> </div>
+            <div class="game">
+                <div class="stage" id="correct"></div>
+                <div class="answer-panel">
+                    <div class="options-grid" id="options"></div>
+                    <div class="actions" id="actions"></div>
+                </div>
             </div>
+        </div>
 
-            <div class="grid" id="options">
-                <div class="choice" id="option0"> </div>
-                <div class="choice" id="option1"> </div>
-                <div class="choice" id="option2"> </div>
-                <div class="choice" id="option3"> </div>
-                <div class="choice" id="option4"> </div>
-                <div class="choice" id="option5"> </div>
-                <div class="choice" id="option6"> </div>
-                <div class="choice" id="option7"> </div>
-            </div>
+        <div id="lightbox" class="lightbox" hidden>
+            <button class="lightbox-close" id="lightbox-close" type="button">Close (Esc)</button>
+            <img id="lightbox-img" alt="">
         </div>
 
         <footer>
@@ -241,11 +244,43 @@ def html_builder(css: str, game: str, data: str) -> str:
 
         <script>
             document.addEventListener('keydown', handle_key_down, false);
+            byId('lightbox').addEventListener('click', function (e) {{
+                if (e.target.id === 'lightbox' || e.target.id === 'lightbox-close') {{
+                    close_lightbox();
+                }}
+            }});
             choose_game();
         </script>
     </body>
 </html>
 """
+
+
+def write_web_only() -> None:
+    """Restage style.css/game.js and rewrite index.html without rebuilding
+    data.js or rescanning the image collection.
+
+    Reuses the most recent existing data-*.js in web_root. Useful for
+    iterating on CSS, JS, or HTML template changes.
+    """
+    data_files = glob.glob(os.path.join(config.web_root, 'data-*.js'))
+    if not data_files:
+        raise RuntimeError(
+            f'No data-*.js found in {config.web_root}; '
+            'run the full pipeline (`make local`) first.'
+        )
+    data_name = os.path.basename(max(data_files, key=os.path.getmtime))
+
+    css = VersionedResource('style.css', config.web_root)
+    game = VersionedResource('game.js', config.web_root)
+    for source in (css, game):
+        source.cleanup()
+        source.write()
+
+    with open(os.path.join(config.web_root, 'index.html'), 'w') as fd:
+        fd.write(html_builder(css.name, game.name, data_name))
+
+    print(f'wrote {css.name}, {game.name}, index.html (data: {data_name})')
 
 
 def main() -> None:
@@ -268,4 +303,15 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Build Diving Detective web assets.')
+    parser.add_argument(
+        '--web-only',
+        action='store_true',
+        help='Restage CSS/JS/HTML only. Skips image scan, data.js, and thumbnail rebuild.',
+    )
+    args = parser.parse_args()
+
+    if args.web_only:
+        write_web_only()
+    else:
+        main()

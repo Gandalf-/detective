@@ -10,3 +10,4 @@ profile.*
 data.js
 data/quality.csv
 data/metrics.json
+.playwright-mcp

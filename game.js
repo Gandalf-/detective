@@ -12,12 +12,10 @@ const g_count_table = [2, 2, 4, 6, 8];
 const g_sample_table = [2, 2, 2, 1, 1];
 
 /**
- * Main entry point
+ * Main entry point — pick a new round, optionally after a delay.
  */
 function choose_game(delay = 0) {
-  if (g_delaying) {
-    return;
-  }
+  if (g_delaying) return;
   g_delaying = true;
 
   blank_options();
@@ -30,7 +28,8 @@ function choose_game(delay = 0) {
 }
 
 /**
- * The player is given a single image and must choose it's name from the text options
+ * Build a round: pick a correct creature, find similar distractors,
+ * load the photo, render the answer pills and action row.
  */
 function name_game() {
   const correct = choose_correct(get_choices());
@@ -44,18 +43,17 @@ function name_game() {
 
   set_correct_thumbnail(correct, null, function () {
     clear_options();
+    clear_actions();
 
     const actual = random(count);
-    for (i = 0, w = 0; i < count; i++) {
-      var option = document.createElement('div');
-
-      if (i == actual) {
-        build_option(option, correct, true);
+    for (let i = 0, w = 0; i < count; i++) {
+      const option = document.createElement('div');
+      if (i === actual) {
+        build_option(option, correct, true, i);
       } else {
-        build_option(option, incorrect[w], false);
+        build_option(option, incorrect[w], false, i);
         w++;
       }
-
       byId('options').appendChild(option);
     }
 
@@ -65,91 +63,37 @@ function name_game() {
   });
 }
 
-function handle_key_down(event) {
-  var option = null;
-  switch (event.keyCode) {
-    // 1 - 9
-    case 49:
-    case 50:
-    case 51:
-    case 52:
-    case 53:
-    case 54:
-    case 55:
-    case 56:
-    case 57:
-      option = 'option' + (event.keyCode - 49);
-      break;
-
-    // n
-    case 78:
-      option = 'new_example';
-      break;
-
-    // s
-    case 83:
-      option = 'skip';
-      break;
-
-    // z
-    case 90:
-      option = 'zoom';
-      break;
-  }
-
-  const elem = document.getElementById(option);
-  console.log(event, elem);
-
-  if (elem !== null) {
-    elem.click();
-  }
-}
-
 /**
- * Build an option element for the name game.
- *
- * @param {HTMLElement} option - The element to build.
- * @param {number} name_index - The index of the creature's name.
- * @param {boolean} correct - Whether this is the correct option.
+ * Build an option pill.
  */
-function build_option(option, name_index, correct) {
-  option.setAttribute('class', 'top switch');
-  option.setAttribute('id', 'option' + i);
+function build_option(option, name_index, correct, index) {
+  option.className = 'pill';
+  option.id = 'option' + index;
 
   if (correct) {
     option.setAttribute('correct', '');
-    option.addEventListener('click', () => {
-      success(option);
-    });
+    option.addEventListener('click', () => success(option));
   } else {
-    option.addEventListener('click', () => {
-      failure(option);
-    });
+    option.addEventListener('click', () => failure(option));
   }
 
-  var text = document.createElement('h4');
-  text.innerHTML = g_names[name_index];
-
-  option.innerHTML = '';
+  const text = document.createElement('h4');
+  text.textContent = g_names[name_index];
   option.appendChild(text);
 }
 
 function update_score() {
-  var total = g_correct + g_incorrect;
-  var score = 0;
-
-  if (total != 0) {
-    score = Math.floor((g_correct / total) * 100);
-  }
-
-  byId('score').innerHTML = `${score}% (${g_correct}/${total})`;
-  byId('points').innerHTML = `Points: ${g_points.toLocaleString()}`;
+  const total = g_correct + g_incorrect;
+  const score = total ? Math.floor((g_correct / total) * 100) : 0;
+  byId('score').textContent = `${score}% (${g_correct}/${total})`;
+  byId('points').textContent = `Points: ${g_points.toLocaleString()}`;
 }
 
 function success(where) {
-  where.style.border = '1px solid green';
+  where.classList.remove('pill--wrong');
+  where.classList.add('pill--correct');
 
-  if (g_mistakes == 0) {
+  if (g_mistakes === 0) {
     g_correct++;
   } else {
     g_incorrect++;
@@ -159,14 +103,13 @@ function success(where) {
   for (let i = 0; i < g_mistakes; i++) {
     points = Math.floor(points / 10);
   }
-  console.log(`adding ${points} points for ${get_difficulty()}`);
   g_points += points;
 
   choose_game(1000);
 }
 
 function failure(where) {
-  where.style.border = '1px solid red';
+  where.classList.add('pill--wrong');
   g_mistakes++;
 }
 
@@ -174,15 +117,19 @@ function clear_options() {
   byId('options').innerHTML = '';
 }
 
+function clear_actions() {
+  byId('actions').innerHTML = '';
+}
+
 /**
- * Blank out the options and highlight the correct one.
+ * Blank the labels of all answer pills, mark the correct one.
+ * Called between rounds while the new photo loads.
  */
 function blank_options() {
-  const options = document.getElementById('options').children;
-
-  for (let option of options) {
+  const options = byId('options').children;
+  for (const option of options) {
     if (option.hasAttribute('correct')) {
-      option.style.border = '1px solid green';
+      option.classList.add('pill--correct');
     } else {
       option.innerHTML = '<h4>&nbsp;</h4>';
     }
@@ -190,42 +137,42 @@ function blank_options() {
 }
 
 /**
- * Set the thumbnail and credit for a target element.
- *
- * @param {HTMLElement} target - The element to set the thumbnail in.
- * @param {string} thumb - The thumbnail hash.
- * @param {string} person - The photographer's name.
- * @param {function} callback - Function to call after the thumbnail is loaded, optional.
+ * Insert a photo + photographer credit into the stage.
  */
 function set_thumbnail(target, thumb, person, callback) {
-  var img = document.createElement('img');
-  img.src = '/small/' + thumb + '.webp';
+  const src = '/small/' + thumb + '.webp';
 
-  var credit = document.createElement('p');
-  credit.classList.add('credit');
-  credit.innerHTML = `Photographer: ${person}`;
+  const img = document.createElement('img');
+  img.alt = '';
+  img.addEventListener('click', open_lightbox);
 
+  const credit = document.createElement('p');
+  credit.className = 'credit';
+  credit.textContent = `Photographer: ${person}`;
+
+  // Wire handlers BEFORE assigning src so a cached image still fires onload.
   img.onload = function () {
     target.innerHTML = '';
+    target.style.setProperty('--photo-bg', `url('${src}')`);
     target.appendChild(img);
     target.appendChild(credit);
-
-    if (callback) {
-      callback();
-    }
+    if (callback) callback();
   };
+  img.onerror = function () {
+    console.error('failed to load', src);
+    // Still advance — leaves the previous photo on stage but rebuilds options
+    // so the user can interact (Skip will pick another image).
+    if (callback) callback();
+  };
+  img.src = src;
 }
 
 /**
- * Set the correct creature name and thumbnails on the game board.
- *
- * @param {number} correct - The index of the correct creature.
- * @param {string} previous - The last thumbnail hash, optional.
- * @param {function} callback - Function to call after the thumbnail is loaded, optional
+ * Pick a photo for the correct creature, avoiding the previous one if possible.
  */
 function set_correct_thumbnail(correct, previous, callback) {
   const images = shuffle([...g_thumbs[correct]]);
-  var i = 0;
+  let i = 0;
   while (i < images.length && images[i] === previous) {
     i++;
   }
@@ -233,86 +180,118 @@ function set_correct_thumbnail(correct, previous, callback) {
   const image = images[i];
   const person_index = g_credit[correct][i];
   const credit = g_people[person_index];
-  console.log('chose', image, credit, 'as the correct image');
 
-  const target = document.getElementById('correct');
-  set_thumbnail(target, image, credit, callback);
+  set_thumbnail(byId('correct'), image, credit, callback);
 }
 
-/*        _   _ _ _ _
- *  _   _| |_(_) (_) |_ _   _
- * | | | | __| | | | __| | | |
- * | |_| | |_| | | | |_| |_| |
- *  \__,_|\__|_|_|_|\__|\__, |
- *                      |___/
- */
+/* ============================================================
+   Action row buttons
+   ============================================================ */
 
-/**
- * Add a "Skip" button to the options section.
- */
 function add_skip() {
-  const skip = document.createElement('div');
-  skip.classList.add('top', 'switch', 'skip');
-  skip.addEventListener('click', () => {
-    choose_game(1000);
-  });
-  skip.setAttribute('id', 'skip');
-  skip.innerHTML = '<h4 class="skip">Skip</h4>';
-
-  byId('options').appendChild(skip);
+  const skip = document.createElement('button');
+  skip.className = 'action';
+  skip.type = 'button';
+  skip.id = 'skip';
+  skip.textContent = 'Skip';
+  skip.addEventListener('click', () => choose_game(1000));
+  byId('actions').appendChild(skip);
 }
 
-/**
- * Add a "New Example" button to the options section. This is only for the name game.
- * @param {number} correct - The index of the correct creature.
- */
 function add_new_correct_thumbnail(correct) {
-  if (g_thumbs[correct].length < 2) {
+  if (g_thumbs[correct].length < 2) return;
+
+  const child = document.createElement('button');
+  child.className = 'action';
+  child.type = 'button';
+  child.id = 'new_example';
+  child.textContent = 'New Example';
+  child.addEventListener('click', () => {
+    const current = byId('correct').querySelector('img').src
+      .split('/').pop().split('.')[0];
+    set_correct_thumbnail(correct, current, null);
+  });
+  byId('actions').appendChild(child);
+}
+
+function add_zoom() {
+  const zoom = document.createElement('button');
+  zoom.className = 'action';
+  zoom.type = 'button';
+  zoom.id = 'zoom';
+  zoom.textContent = 'Zoom';
+  zoom.addEventListener('click', open_lightbox);
+  byId('actions').appendChild(zoom);
+}
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+
+function open_lightbox() {
+  const img = byId('correct').querySelector('img');
+  if (!img) return;
+  byId('lightbox-img').src = img.src.replace('/small/', '/large/');
+  byId('lightbox').hidden = false;
+}
+
+function close_lightbox() {
+  byId('lightbox').hidden = true;
+}
+
+function toggle_lightbox() {
+  if (byId('lightbox').hidden) {
+    open_lightbox();
+  } else {
+    close_lightbox();
+  }
+}
+
+/* ============================================================
+   Keyboard
+   ============================================================ */
+
+function handle_key_down(event) {
+  if (event.key === 'Escape') {
+    if (!byId('lightbox').hidden) {
+      close_lightbox();
+      event.preventDefault();
+    }
     return;
   }
 
-  function new_correct_thumbnail() {
-    const current = byId('correct').firstChild.src.split('/').pop().split('.')[0];
-    console.log('Setting a new correct thumbnail, previous was', current);
-    set_correct_thumbnail(correct, current, null);
+  let option = null;
+  switch (event.keyCode) {
+    case 49: case 50: case 51: case 52: case 53:
+    case 54: case 55: case 56: case 57: // 1-9
+      if (!byId('lightbox').hidden) return;
+      option = 'option' + (event.keyCode - 49);
+      break;
+    case 78: // n
+      if (!byId('lightbox').hidden) return;
+      option = 'new_example';
+      break;
+    case 83: // s
+      if (!byId('lightbox').hidden) return;
+      option = 'skip';
+      break;
+    case 90: // z
+      toggle_lightbox();
+      event.preventDefault();
+      return;
   }
 
-  const child = document.createElement('div');
-  child.classList.add('top', 'switch', 'skip');
-  child.addEventListener('click', new_correct_thumbnail);
-  child.setAttribute('id', 'new_example');
-  child.innerHTML = '<h4 class="skip">New Example</h4>';
-
-  byId('options').appendChild(child);
+  if (option === null) return;
+  const elem = byId(option);
+  if (elem !== null) elem.click();
 }
 
-/**
- * Add a "Zoom" button to the options section.
- * This replaces '/small/' with '/large/' in the image URL.
- */
-function add_zoom() {
-  function enhance() {
-    const current = byId('correct').firstChild.src;
-    var img = byId('correct').firstChild;
-
-    img.src = current.replace('/small/', '/large/');
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '100%';
-    img.style.height = 'auto';
-  }
-
-  const zoom = document.createElement('div');
-  zoom.classList.add('top', 'switch', 'skip');
-  zoom.addEventListener('click', enhance);
-  zoom.setAttribute('id', 'zoom');
-  zoom.innerHTML = '<h4 class="skip">Zoom</h4>';
-
-  byId('options').appendChild(zoom);
-}
+/* ============================================================
+   Selection helpers
+   ============================================================ */
 
 function get_choices() {
-  const game = byId('game').value;
-  return g_categories[game];
+  return g_categories[byId('game').value];
 }
 
 function get_difficulty() {
@@ -324,13 +303,10 @@ function choose_correct(choices) {
 }
 
 function incorrect_location(candidate) {
-  if (!candidate.startsWith('Non-RC')) {
-    return false;
-  }
+  if (!candidate.startsWith('Non-RC')) return false;
 
   const game = byId('game').value;
   const needed = game.substring(0, 2).toUpperCase();
-
   const actual = candidate.substring(6, 8);
   return actual !== needed;
 }
@@ -344,17 +320,10 @@ function incorrect_location(candidate) {
  *
  * Both bounds will be relaxed if no candidates can be found until eventually
  * every creature will be considered.
- *
- * @param   {number} target - Index of the creature to find similar creatures for.
- * @param   {number} lowerBound - Minimum starting similarity.
- * @param   {number} upperBound - Maximum starting similarity.
- * @param   {number} required - How many creatures to find.
- * @returns {number[]} Array of creature indices.
  */
 function find_similar(target, lowerBound, upperBound, required) {
   const found = [];
-  var shuffledIndices = shuffle([...Array(g_names.length).keys()]);
-  console.log('search limits', lowerBound, upperBound, g_names[target]);
+  let shuffledIndices = shuffle([...Array(g_names.length).keys()]);
 
   while (found.length < required) {
     if (shuffledIndices.length === 0) {
@@ -362,21 +331,14 @@ function find_similar(target, lowerBound, upperBound, required) {
         console.error("couldn't satisfy the requirement:", target, lowerBound, required);
         break;
       }
-
-      // We've looped through, relax the constraints.
       lowerBound = Math.max(0, lowerBound - 5);
       upperBound = Math.min(100, upperBound + 5);
       shuffledIndices = shuffle([...Array(g_names.length).keys()]);
     }
 
     const candidate = shuffledIndices.pop();
-    if (candidate === target || found.includes(candidate)) {
-      continue;
-    }
-
-    if (incorrect_location(g_names[candidate])) {
-      continue;
-    }
+    if (candidate === target || found.includes(candidate)) continue;
+    if (incorrect_location(g_names[candidate])) continue;
 
     const i = Math.max(candidate, target);
     const j = Math.min(candidate, target);
@@ -390,12 +352,10 @@ function find_similar(target, lowerBound, upperBound, required) {
   return found;
 }
 
-/* other utilities */
+/* ============================================================
+   Misc
+   ============================================================ */
 
-/**
- * Get a random integer between 0 and maximum.
- * @param {number} maximum - The maximum value possible.
- */
 function random(maximum) {
   return Math.floor(Math.random() * 10 ** 5) % maximum;
 }
@@ -404,13 +364,8 @@ function byId(label) {
   return document.getElementById(label);
 }
 
-/**
- * Produce a shuffled version of the input array.
- * @param {any[]} array - The array to shuffle.
- */
 function shuffle(array) {
   // https://stackoverflow.com/a/12646864
-
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
